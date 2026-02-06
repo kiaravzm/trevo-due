@@ -39,7 +39,10 @@ function mapSubscriptionPayload(event: Stripe.Event): SubscriptionPayload | null
     };
   }
 
-  const subscription = event.data.object as Stripe.Subscription;
+  const subscription = event.data.object as Stripe.Subscription & {
+    current_period_end?: number;
+    trial_end?: number;
+  };
   const userId = subscription.metadata?.user_id;
   if (!userId) return null;
 

@@ -15,7 +15,6 @@ type InvoiceRowProps = {
     due_date: string | null;
     customer_id: string | null;
     reminders_enabled: boolean;
-    customer_email: string | null;
   };
   customers: Array<{ id: string; name: string }>;
 };
@@ -42,7 +41,7 @@ export function InvoiceRow({ invoice, customers }: InvoiceRowProps) {
     sendInvoiceReminderAction,
     reminderInitialState
   );
-  const canSendReminder = invoice.reminders_enabled && Boolean(invoice.customer_email);
+  const canSendReminder = invoice.reminders_enabled;
 
   return (
     <div className="space-y-3 rounded-lg border border-border bg-card p-4">
@@ -122,7 +121,7 @@ export function InvoiceRow({ invoice, customers }: InvoiceRowProps) {
         </form>
         {!canSendReminder ? (
           <span className="text-xs text-muted-foreground">
-            Add a client email and enable reminders to send.
+            Enable reminders to send a polite email.
           </span>
         ) : null}
       </div>

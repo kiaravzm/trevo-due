@@ -25,6 +25,7 @@
     --ring: 220 84% 56%;
     --radius: 12px;
     --shadow: 220 25% 25%;
+    --font-sans: system-ui;
   }
 
   .dark {

@@ -9,7 +9,7 @@ import { PaywallCard } from "../billing/paywall-card";
 export default async function InvoicesPage() {
   const subscriptionStatus = await getSubscriptionStatus();
   const supabase = createSupabaseServerClient();
-  const { count: invoiceCount = 0 } = await supabase
+  const { count } = await supabase
     .from("invoices")
     .select("id", { count: "exact", head: true });
   const { data: customers } = await supabase
@@ -20,10 +20,11 @@ export default async function InvoicesPage() {
   const { data: invoices } = await supabase
     .from("invoices")
     .select(
-      "id, number, status, amount_cents, currency, due_date, customer_id, reminders_enabled, customers (email)"
+      "id, number, status, amount_cents, currency, due_date, customer_id, reminders_enabled"
     )
     .order("created_at", { ascending: false });
 
+  const invoiceCount = count ?? 0;
   const limitReached = subscriptionStatus === "inactive" && invoiceCount >= 3;
 
   return (
@@ -63,14 +64,7 @@ export default async function InvoicesPage() {
           <CardContent className="space-y-3">
             {invoices && invoices.length > 0 ? (
               invoices.map((invoice) => (
-                <InvoiceRow
-                  key={invoice.id}
-                  invoice={{
-                    ...invoice,
-                    customer_email: invoice.customers?.email ?? null,
-                  }}
-                  customers={customers ?? []}
-                />
+                <InvoiceRow key={invoice.id} invoice={invoice} customers={customers ?? []} />
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
