@@ -1,5 +1,9 @@
 {
-  "/auth/callback/route": "app/auth/callback/route.js",
   "/page": "app/page.js",
-  "/login/page": "app/login/page.js"
+  "/api/stripe/webhook/route": "app/api/stripe/webhook/route.js",
+  "/(protected)/dashboard/contracts/page": "app/(protected)/dashboard/contracts/page.js",
+  "/(protected)/dashboard/clients/page": "app/(protected)/dashboard/clients/page.js",
+  "/(protected)/dashboard/invoices/page": "app/(protected)/dashboard/invoices/page.js",
+  "/(protected)/dashboard/billing/page": "app/(protected)/dashboard/billing/page.js",
+  "/(protected)/dashboard/page": "app/(protected)/dashboard/page.js"
 }

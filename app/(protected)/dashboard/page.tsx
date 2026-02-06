@@ -41,6 +41,9 @@ export default function DashboardPage() {
               <Button asChild variant="outline">
                 <Link href="/dashboard/invoices">Manage invoices</Link>
               </Button>
+              <Button asChild variant="ghost">
+                <Link href="/dashboard/billing">Billing</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>

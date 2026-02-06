@@ -1,8 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { Resend } from "resend";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { buildInvoiceReminderEmail } from "@/lib/email/invoice-reminder";
+import { getStripeServerClient } from "@/lib/stripe/server";
 
 type ActionState = {
   status: "idle" | "success" | "error";
@@ -33,6 +37,79 @@ async function getAuthUser() {
   } = await supabase.auth.getUser();
 
   return { supabase, user };
+}
+
+async function hasReachedFreeInvoiceLimit(
+  supabase: ReturnType<typeof createSupabaseServerClient>,
+  userId: string
+) {
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("status")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (subscription?.status === "active" || subscription?.status === "trialing") {
+    return false;
+  }
+
+  const { count } = await supabase
+    .from("invoices")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  return (count ?? 0) >= 3;
+}
+
+async function hasReachedFreeContractLimit(
+  supabase: ReturnType<typeof createSupabaseServerClient>,
+  userId: string
+) {
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("status")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (subscription?.status === "active" || subscription?.status === "trialing") {
+    return false;
+  }
+
+  const { count } = await supabase
+    .from("contracts")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  return (count ?? 0) >= 3;
+}
+
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing RESEND_API_KEY environment variable.");
+  }
+
+  return new Resend(apiKey);
+}
+
+function getReminderSender() {
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!from) {
+    throw new Error("Missing RESEND_FROM_EMAIL environment variable.");
+  }
+
+  return from;
+}
+
+function normalizeReminderEnabled(value: FormDataEntryValue | null) {
+  if (value === "on" || value === "true") {
+    return true;
+  }
+  return false;
+}
+
+function getAppUrl() {
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 }
 
 export async function createClientAction(_prev: ActionState, formData: FormData) {
@@ -122,6 +199,7 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
   const currency = String(formData.get("currency") ?? "USD").trim().toUpperCase();
   const dueDate = String(formData.get("due_date") ?? "").trim();
   const customerId = String(formData.get("customer_id") ?? "").trim();
+  const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
 
   if (!number) {
     return createState("error", "Invoice number is required.");
@@ -141,6 +219,14 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
     return createState("error", "You need to be signed in to create invoices.");
   }
 
+  const limitReached = await hasReachedFreeInvoiceLimit(supabase, user.id);
+  if (limitReached) {
+    return createState(
+      "error",
+      "Free plan reached. Upgrade to create more than 3 invoices."
+    );
+  }
+
   const { error } = await supabase.from("invoices").insert({
     user_id: user.id,
     number,
@@ -149,6 +235,7 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
     currency,
     due_date: dueDate || null,
     customer_id: customerId || null,
+    reminders_enabled: remindersEnabled,
   });
 
   if (error) {
@@ -167,6 +254,7 @@ export async function updateInvoiceAction(_prev: ActionState, formData: FormData
   const currency = String(formData.get("currency") ?? "USD").trim().toUpperCase();
   const dueDate = String(formData.get("due_date") ?? "").trim();
   const customerId = String(formData.get("customer_id") ?? "").trim();
+  const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
 
   if (!id) {
     return createState("error", "Missing invoice ID.");
@@ -195,6 +283,7 @@ export async function updateInvoiceAction(_prev: ActionState, formData: FormData
       currency,
       due_date: dueDate || null,
       customer_id: customerId || null,
+      reminders_enabled: remindersEnabled,
     })
     .eq("id", id);
 
@@ -215,6 +304,125 @@ export async function deleteInvoiceAction(formData: FormData) {
   const { supabase } = await getAuthUser();
   await supabase.from("invoices").delete().eq("id", id);
   revalidatePath("/dashboard/invoices");
+}
+
+export async function sendInvoiceReminderAction(
+  _prev: ActionState,
+  formData: FormData
+) {
+  const invoiceId = String(formData.get("invoice_id") ?? "").trim();
+
+  if (!invoiceId) {
+    return createState("error", "Missing invoice ID.");
+  }
+
+  const { supabase, user } = await getAuthUser();
+  if (!user) {
+    return createState("error", "You need to be signed in to send reminders.");
+  }
+
+  const { data: invoice, error } = await supabase
+    .from("invoices")
+    .select("id, number, amount_cents, currency, due_date, reminders_enabled, customer_id")
+    .eq("id", invoiceId)
+    .maybeSingle();
+
+  if (error || !invoice) {
+    return createState("error", "Invoice not found.");
+  }
+
+  if (!invoice.reminders_enabled) {
+    return createState("error", "Reminders are disabled for this invoice.");
+  }
+
+  if (!invoice.customer_id) {
+    return createState("error", "Assign a client before sending reminders.");
+  }
+
+  const { data: customer } = await supabase
+    .from("customers")
+    .select("name, email")
+    .eq("id", invoice.customer_id)
+    .maybeSingle();
+
+  if (!customer?.email) {
+    return createState("error", "Client email is missing.");
+  }
+
+  const amount = `${invoice.currency} ${(invoice.amount_cents / 100).toFixed(2)}`;
+  const reminder = buildInvoiceReminderEmail({
+    clientName: customer.name,
+    invoiceNumber: invoice.number,
+    amount,
+    dueDate: invoice.due_date,
+    senderName: "AgencyDocs",
+  });
+
+  const resend = getResend();
+  const from = getReminderSender();
+
+  const { error: sendError } = await resend.emails.send({
+    from,
+    to: customer.email,
+    subject: reminder.subject,
+    text: reminder.text,
+    html: reminder.html,
+  });
+
+  if (sendError) {
+    return createState("error", sendError.message);
+  }
+
+  return createState("success", "Reminder sent successfully.");
+}
+
+export async function startCheckoutAction() {
+  const supabase = createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
+
+  const priceId = process.env.STRIPE_PRICE_ID;
+  if (!priceId) {
+    return redirect("/dashboard/billing?status=error");
+  }
+
+  const { data: existing } = await supabase
+    .from("subscriptions")
+    .select("trial_ends_at")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const stripe = getStripeServerClient();
+  const trialDaysRaw = process.env.STRIPE_TRIAL_DAYS ?? "0";
+  const trialDays = Number(trialDaysRaw);
+  const hasTrial = !existing?.trial_ends_at && Number.isFinite(trialDays) && trialDays > 0;
+  const appUrl = getAppUrl();
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [{ price: priceId, quantity: 1 }],
+    customer_email: user.email ?? undefined,
+    success_url: `${appUrl}/dashboard/billing?status=success`,
+    cancel_url: `${appUrl}/dashboard/billing?status=cancel`,
+    subscription_data: {
+      ...(hasTrial ? { trial_period_days: trialDays } : {}),
+      metadata: { user_id: user.id },
+    },
+    metadata: {
+      user_id: user.id,
+    },
+  });
+
+  if (!session.url) {
+    return redirect("/dashboard/billing?status=error");
+  }
+
+  return redirect(session.url);
 }
 
 export async function createContractAction(_prev: ActionState, formData: FormData) {
@@ -238,6 +446,14 @@ export async function createContractAction(_prev: ActionState, formData: FormDat
   const { supabase, user } = await getAuthUser();
   if (!user) {
     return createState("error", "You need to be signed in to upload contracts.");
+  }
+
+  const limitReached = await hasReachedFreeContractLimit(supabase, user.id);
+  if (limitReached) {
+    return createState(
+      "error",
+      "Free plan reached. Upgrade to upload more than 3 contracts."
+    );
   }
 
   const filename = `${crypto.randomUUID()}.pdf`;

@@ -1,11 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
 import { ContractCreateForm } from "./contract-create-form";
 import { ContractRow } from "./contract-row";
+import { PaywallCard } from "../billing/paywall-card";
 
 export default async function ContractsPage() {
+  const subscriptionStatus = await getSubscriptionStatus();
   const supabase = createSupabaseServerClient();
+  const { count: contractCount = 0 } = await supabase
+    .from("contracts")
+    .select("id", { count: "exact", head: true });
   const { data: customers } = await supabase
     .from("customers")
     .select("id, name")
@@ -15,6 +21,8 @@ export default async function ContractsPage() {
     .from("contracts")
     .select("id, title, status, customer_id, file_path")
     .order("created_at", { ascending: false });
+
+  const limitReached = subscriptionStatus === "inactive" && contractCount >= 3;
 
   return (
     <main className="min-h-screen bg-background">
@@ -26,15 +34,24 @@ export default async function ContractsPage() {
           </p>
         </div>
 
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Upload contract</CardTitle>
-            <CardDescription>PDF files are stored privately and scoped to your account.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ContractCreateForm customers={customers ?? []} />
-          </CardContent>
-        </Card>
+        {limitReached ? (
+          <PaywallCard
+            title="You've reached the free contract limit"
+            description="Upgrade to keep unlimited agreements in your workspace."
+          />
+        ) : (
+          <Card className="shadow-soft">
+            <CardHeader>
+              <CardTitle>Upload contract</CardTitle>
+              <CardDescription>
+                PDF files are stored privately and scoped to your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ContractCreateForm customers={customers ?? []} />
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="shadow-soft">
           <CardHeader>

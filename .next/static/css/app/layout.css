@@ -622,6 +622,9 @@ video {
 .visible {
   visibility: visible;
 }
+.col-span-full {
+  grid-column: 1 / -1;
+}
 .mt-6 {
   margin-top: 1.5rem;
 }
@@ -652,6 +655,9 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-4 {
+  height: 1rem;
+}
 .min-h-screen {
   min-height: 100vh;
 }
@@ -660,6 +666,9 @@ video {
 }
 .w-full {
   width: 100%;
+}
+.w-4 {
+  width: 1rem;
 }
 .max-w-2xl {
   max-width: 42rem;
@@ -681,6 +690,9 @@ video {
 }
 .justify-center {
   justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
 }
 .gap-2 {
   gap: 0.5rem;

@@ -35,6 +35,7 @@ create table if not exists public.invoices (
   amount_cents integer not null default 0,
   currency text not null default 'USD',
   due_date date,
+  reminders_enabled boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -50,15 +51,30 @@ create table if not exists public.contracts (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  stripe_customer_id text,
+  stripe_subscription_id text,
+  status text not null default 'inactive',
+  current_period_end timestamptz,
+  trial_ends_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id)
+);
+
 create index if not exists customers_user_id_idx on public.customers (user_id);
 create index if not exists proposals_user_id_idx on public.proposals (user_id);
 create index if not exists invoices_user_id_idx on public.invoices (user_id);
 create index if not exists contracts_user_id_idx on public.contracts (user_id);
+create index if not exists subscriptions_user_id_idx on public.subscriptions (user_id);
 
 alter table public.customers enable row level security;
 alter table public.proposals enable row level security;
 alter table public.invoices enable row level security;
 alter table public.contracts enable row level security;
+alter table public.subscriptions enable row level security;
 
 create policy "customers_select_own" on public.customers
   for select
@@ -127,3 +143,16 @@ create policy "contracts_update_own" on public.contracts
 create policy "contracts_delete_own" on public.contracts
   for delete
   using (auth.uid() = user_id);
+
+create policy "subscriptions_select_own" on public.subscriptions
+  for select
+  using (auth.uid() = user_id);
+
+create policy "subscriptions_insert_own" on public.subscriptions
+  for insert
+  with check (auth.uid() = user_id);
+
+create policy "subscriptions_update_own" on public.subscriptions
+  for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);

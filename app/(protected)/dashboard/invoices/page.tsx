@@ -1,11 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
 import { InvoiceCreateForm } from "./invoice-create-form";
 import { InvoiceRow } from "./invoice-row";
+import { PaywallCard } from "../billing/paywall-card";
 
 export default async function InvoicesPage() {
+  const subscriptionStatus = await getSubscriptionStatus();
   const supabase = createSupabaseServerClient();
+  const { count: invoiceCount = 0 } = await supabase
+    .from("invoices")
+    .select("id", { count: "exact", head: true });
   const { data: customers } = await supabase
     .from("customers")
     .select("id, name")
@@ -13,8 +19,12 @@ export default async function InvoicesPage() {
 
   const { data: invoices } = await supabase
     .from("invoices")
-    .select("id, number, status, amount_cents, currency, due_date, customer_id")
+    .select(
+      "id, number, status, amount_cents, currency, due_date, customer_id, reminders_enabled, customers (email)"
+    )
     .order("created_at", { ascending: false });
+
+  const limitReached = subscriptionStatus === "inactive" && invoiceCount >= 3;
 
   return (
     <main className="min-h-screen bg-background">
@@ -26,15 +36,24 @@ export default async function InvoicesPage() {
           </p>
         </div>
 
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Create invoice</CardTitle>
-            <CardDescription>Use consistent numbers and status to keep clients aligned.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <InvoiceCreateForm customers={customers ?? []} />
-          </CardContent>
-        </Card>
+        {limitReached ? (
+          <PaywallCard
+            title="You've reached the free invoice limit"
+            description="Upgrade to create unlimited invoices and keep billing moving."
+          />
+        ) : (
+          <Card className="shadow-soft">
+            <CardHeader>
+              <CardTitle>Create invoice</CardTitle>
+              <CardDescription>
+                Use consistent numbers and status to keep clients aligned.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <InvoiceCreateForm customers={customers ?? []} />
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="shadow-soft">
           <CardHeader>
@@ -44,7 +63,14 @@ export default async function InvoicesPage() {
           <CardContent className="space-y-3">
             {invoices && invoices.length > 0 ? (
               invoices.map((invoice) => (
-                <InvoiceRow key={invoice.id} invoice={invoice} customers={customers ?? []} />
+                <InvoiceRow
+                  key={invoice.id}
+                  invoice={{
+                    ...invoice,
+                    customer_email: invoice.customers?.email ?? null,
+                  }}
+                  customers={customers ?? []}
+                />
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
