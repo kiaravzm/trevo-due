@@ -9,7 +9,7 @@ import { PaywallCard } from "../billing/paywall-card";
 export default async function ContractsPage() {
   const subscriptionStatus = await getSubscriptionStatus();
   const supabase = createSupabaseServerClient();
-  const { count: contractCount = 0 } = await supabase
+  const { count } = await supabase
     .from("contracts")
     .select("id", { count: "exact", head: true });
   const { data: customers } = await supabase
@@ -22,6 +22,7 @@ export default async function ContractsPage() {
     .select("id, title, status, customer_id, file_path")
     .order("created_at", { ascending: false });
 
+  const contractCount = count ?? 0;
   const limitReached = subscriptionStatus === "inactive" && contractCount >= 3;
 
   return (
