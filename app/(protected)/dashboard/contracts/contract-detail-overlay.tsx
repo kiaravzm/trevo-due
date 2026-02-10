@@ -74,7 +74,7 @@ export function ContractDetailOverlay({
   useEffect(() => {
     if (open && contract.file_path) {
       getContractSignedUrlAction(contract.file_path).then((result) => {
-        if ("url" in result) {
+        if ("url" in result && result.url) {
           setPdfUrl(result.url);
         } else {
           setPdfUrl(null);
