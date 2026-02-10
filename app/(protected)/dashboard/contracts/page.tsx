@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
 import { ContractCreateForm } from "./contract-create-form";
-import { ContractRow } from "./contract-row";
+import { ContractListItem } from "./contract-list-item";
 import { PaywallCard } from "../billing/paywall-card";
 
 export default async function ContractsPage() {
@@ -61,13 +61,21 @@ export default async function ContractsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {contracts && contracts.length > 0 ? (
-              contracts.map((contract) => (
-                <ContractRow
-                  key={contract.id}
-                  contract={contract}
-                  customers={customers ?? []}
-                />
-              ))
+              <>
+                <div className="hidden grid-cols-[1.5fr,1fr,1fr,auto] gap-4 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
+                  <span>Title</span>
+                  <span>Status</span>
+                  <span>Client</span>
+                  <span className="w-10" aria-hidden />
+                </div>
+                {contracts.map((contract) => (
+                  <ContractListItem
+                    key={contract.id}
+                    contract={contract}
+                    customers={customers ?? []}
+                  />
+                ))}
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
                 No contracts yet. Upload your first PDF above.

@@ -1,8 +1,11 @@
+import Link from "next/link";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { ClientCreateForm } from "./client-create-form";
-import { ClientRow } from "./client-row";
+import { ClientListItem } from "./client-list-item";
 
 export default async function ClientsPage() {
   const supabase = createSupabaseServerClient();
@@ -21,7 +24,7 @@ export default async function ClientsPage() {
           </p>
         </div>
 
-        <Card className="shadow-soft">
+        <Card className="shadow-soft" id="add-client">
           <CardHeader>
             <CardTitle>Add client</CardTitle>
             <CardDescription>Save contact details so documents stay consistent.</CardDescription>
@@ -38,9 +41,24 @@ export default async function ClientsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {clients && clients.length > 0 ? (
-              clients.map((client) => <ClientRow key={client.id} client={client} />)
+              <>
+                <div className="hidden grid-cols-[1fr,1fr,1fr,auto] gap-4 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
+                  <span>Name</span>
+                  <span>Company</span>
+                  <span>Email</span>
+                  <span className="w-10" aria-hidden />
+                </div>
+                {clients.map((client) => (
+                  <ClientListItem key={client.id} client={client} />
+                ))}
+              </>
             ) : (
-              <p className="text-sm text-muted-foreground">No clients yet. Add the first one above.</p>
+              <div className="flex flex-col gap-3 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
+                <p className="text-sm text-muted-foreground">No clients yet.</p>
+                <Button asChild variant="secondary" size="sm" className="self-center">
+                  <Link href="#add-client">Add your first client</Link>
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>

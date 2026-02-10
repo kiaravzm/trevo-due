@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createInvoiceAction } from "../actions";
 
 type InvoiceCreateFormProps = {
@@ -23,30 +27,33 @@ function SubmitButton() {
 export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
   const [state, formAction] = useFormState(createInvoiceAction, initialState);
 
+  useEffect(() => {
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    } else if (state.status === "error" && state.message) {
+      toast.error(state.message);
+    }
+  }, [state.status, state.message]);
+
   return (
     <form action={formAction} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-number">
-            Invoice number
-          </label>
-          <input
+          <Label htmlFor="invoice-number">Invoice number</Label>
+          <Input
             id="invoice-number"
             name="number"
             required
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="INV-2024-001"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-status">
-            Status
-          </label>
+          <Label htmlFor="invoice-status">Status</Label>
           <select
             id="invoice-status"
             name="status"
             defaultValue="open"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <option value="open">Open</option>
             <option value="paid">Paid</option>
@@ -54,14 +61,12 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
           </select>
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-customer">
-            Client (optional)
-          </label>
+          <Label htmlFor="invoice-customer">Client (optional)</Label>
           <select
             id="invoice-customer"
             name="customer_id"
             defaultValue=""
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <option value="">No client</option>
             {customers.map((customer) => (
@@ -75,38 +80,26 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-amount">
-            Amount
-          </label>
-          <input
+          <Label htmlFor="invoice-amount">Amount</Label>
+          <Input
             id="invoice-amount"
             name="amount"
             required
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="1250.00"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-currency">
-            Currency
-          </label>
-          <input
+          <Label htmlFor="invoice-currency">Currency</Label>
+          <Input
             id="invoice-currency"
             name="currency"
             defaultValue="USD"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+            placeholder="USD"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="invoice-due">
-            Due date (optional)
-          </label>
-          <input
-            id="invoice-due"
-            name="due_date"
-            type="date"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
-          />
+          <Label htmlFor="invoice-due">Due date (optional)</Label>
+          <Input id="invoice-due" name="due_date" type="date" />
         </div>
       </div>
 
@@ -117,18 +110,6 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
         </label>
         <SubmitButton />
       </div>
-
-      {state.message ? (
-        <p
-          className={`rounded-md border px-3 py-2 text-sm ${
-            state.status === "success"
-              ? "border-border bg-secondary text-secondary-foreground"
-              : "border-destructive/40 bg-destructive/10 text-destructive"
-          }`}
-        >
-          {state.message}
-        </p>
-      ) : null}
     </form>
   );
 }

@@ -528,3 +528,25 @@ export async function deleteContractAction(formData: FormData) {
   await supabase.from("contracts").delete().eq("id", id);
   revalidatePath("/dashboard/contracts");
 }
+
+export async function getContractSignedUrlAction(filePath: string) {
+  const path = String(filePath ?? "").trim();
+  if (!path) {
+    return { error: "Invalid file path" };
+  }
+
+  const { supabase, user } = await getAuthUser();
+  if (!user) {
+    return { error: "You need to be signed in to view contracts." };
+  }
+
+  const { data, error } = await supabase.storage
+    .from("contracts")
+    .createSignedUrl(path, 3600);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { url: data.signedUrl };
+}

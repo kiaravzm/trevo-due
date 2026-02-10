@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createContractAction } from "../actions";
 
 type ContractCreateFormProps = {
@@ -23,29 +27,32 @@ function SubmitButton() {
 export function ContractCreateForm({ customers }: ContractCreateFormProps) {
   const [state, formAction] = useFormState(createContractAction, initialState);
 
+  useEffect(() => {
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    } else if (state.status === "error" && state.message) {
+      toast.error(state.message);
+    }
+  }, [state.status, state.message]);
+
   return (
     <form action={formAction} encType="multipart/form-data" className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="contract-title">
-            Contract title
-          </label>
-          <input
+          <Label htmlFor="contract-title">Contract title</Label>
+          <Input
             id="contract-title"
             name="title"
             required
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="Master Services Agreement"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="contract-status">
-            Status
-          </label>
+          <Label htmlFor="contract-status">Status</Label>
           <select
             id="contract-status"
             name="status"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             defaultValue="signed"
           >
             <option value="signed">Signed</option>
@@ -54,13 +61,11 @@ export function ContractCreateForm({ customers }: ContractCreateFormProps) {
           </select>
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="contract-client">
-            Client (optional)
-          </label>
+          <Label htmlFor="contract-client">Client (optional)</Label>
           <select
             id="contract-client"
             name="customer_id"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             defaultValue=""
           >
             <option value="">No client</option>
@@ -74,9 +79,7 @@ export function ContractCreateForm({ customers }: ContractCreateFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-foreground" htmlFor="contract-file">
-          PDF file
-        </label>
+        <Label htmlFor="contract-file">PDF file</Label>
         <input
           id="contract-file"
           name="file"
@@ -88,18 +91,6 @@ export function ContractCreateForm({ customers }: ContractCreateFormProps) {
       </div>
 
       <SubmitButton />
-
-      {state.message ? (
-        <p
-          className={`rounded-md border px-3 py-2 text-sm ${
-            state.status === "success"
-              ? "border-border bg-secondary text-secondary-foreground"
-              : "border-destructive/40 bg-destructive/10 text-destructive"
-          }`}
-        >
-          {state.message}
-        </p>
-      ) : null}
     </form>
   );
 }

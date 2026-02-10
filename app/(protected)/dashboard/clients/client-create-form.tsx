@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createClientAction } from "../actions";
 
 const initialState = { status: "idle" as const, message: null as string | null };
@@ -19,59 +23,46 @@ function SubmitButton() {
 export function ClientCreateForm() {
   const [state, formAction] = useFormState(createClientAction, initialState);
 
+  useEffect(() => {
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    } else if (state.status === "error" && state.message) {
+      toast.error(state.message);
+    }
+  }, [state.status, state.message]);
+
   return (
     <form action={formAction} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="client-name">
-            Client name
-          </label>
-          <input
+          <Label htmlFor="client-name">Client name</Label>
+          <Input
             id="client-name"
             name="name"
             required
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="Northwind Agency"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="client-email">
-            Email (optional)
-          </label>
-          <input
+          <Label htmlFor="client-email">Email (optional)</Label>
+          <Input
             id="client-email"
             name="email"
             type="email"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="hello@northwind.com"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="client-company">
-            Company (optional)
-          </label>
-          <input
+          <Label htmlFor="client-company">Company (optional)</Label>
+          <Input
             id="client-company"
             name="company"
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             placeholder="Northwind LLC"
           />
         </div>
       </div>
 
       <SubmitButton />
-
-      {state.message ? (
-        <p
-          className={`rounded-md border px-3 py-2 text-sm ${
-            state.status === "success"
-              ? "border-border bg-secondary text-secondary-foreground"
-              : "border-destructive/40 bg-destructive/10 text-destructive"
-          }`}
-        >
-          {state.message}
-        </p>
-      ) : null}
     </form>
   );
 }

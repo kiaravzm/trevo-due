@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
 import { InvoiceCreateForm } from "./invoice-create-form";
-import { InvoiceRow } from "./invoice-row";
+import { InvoiceListItem } from "./invoice-list-item";
 import { PaywallCard } from "../billing/paywall-card";
 
 export default async function InvoicesPage() {
@@ -63,9 +63,23 @@ export default async function InvoicesPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {invoices && invoices.length > 0 ? (
-              invoices.map((invoice) => (
-                <InvoiceRow key={invoice.id} invoice={invoice} customers={customers ?? []} />
-              ))
+              <>
+                <div className="hidden grid-cols-[1fr,1fr,1fr,1fr,1fr,auto] gap-4 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
+                  <span>Number</span>
+                  <span>Status</span>
+                  <span>Amount</span>
+                  <span>Due date</span>
+                  <span>Client</span>
+                  <span className="w-10" aria-hidden />
+                </div>
+                {invoices.map((invoice) => (
+                  <InvoiceListItem
+                    key={invoice.id}
+                    invoice={invoice}
+                    customers={customers ?? []}
+                  />
+                ))}
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
                 No invoices yet. Create the first one above.
