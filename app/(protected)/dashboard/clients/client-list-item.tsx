@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 import { ClientDetailOverlay } from "./client-detail-overlay";
 
 type Client = {
@@ -51,7 +52,7 @@ export function ClientListItem({ client }: ClientListItemProps) {
             e.stopPropagation();
             setOverlayOpen(true);
           }}
-          aria-label="View or edit client"
+          aria-label={t("client.viewOrEditClient")}
         >
           <Pencil className="h-4 w-4" />
         </Button>

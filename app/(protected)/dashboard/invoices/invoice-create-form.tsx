@@ -7,10 +7,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { t } from "@/lib/i18n";
 import { createInvoiceAction } from "../actions";
 
 type InvoiceCreateFormProps = {
   customers: Array<{ id: string; name: string }>;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 };
 
 const initialState = { status: "idle" as const, message: null as string | null };
@@ -19,27 +23,28 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving..." : "Create invoice"}
+      {pending ? t("common.saving") : t("invoice.createInvoiceButton")}
     </Button>
   );
 }
 
-export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
+export function InvoiceCreateForm({ customers, onSuccess, onCancel }: InvoiceCreateFormProps) {
   const [state, formAction] = useFormState(createInvoiceAction, initialState);
 
   useEffect(() => {
     if (state.status === "success" && state.message) {
       toast.success(state.message);
+      onSuccess?.();
     } else if (state.status === "error" && state.message) {
       toast.error(state.message);
     }
-  }, [state.status, state.message]);
+  }, [state.status, state.message, onSuccess]);
 
   return (
     <form action={formAction} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="invoice-number">Invoice number</Label>
+          <Label htmlFor="invoice-number">{t("invoice.invoiceNumber")}</Label>
           <Input
             id="invoice-number"
             name="number"
@@ -48,39 +53,29 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="invoice-status">Status</Label>
-          <select
-            id="invoice-status"
-            name="status"
-            defaultValue="open"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <option value="open">Open</option>
-            <option value="paid">Paid</option>
-            <option value="overdue">Overdue</option>
-          </select>
+          <Label htmlFor="invoice-status">{t("common.status")}</Label>
+          <Select id="invoice-status" name="status" defaultValue="open">
+            <option value="open">{t("invoice.status.open")}</option>
+            <option value="paid">{t("invoice.status.paid")}</option>
+            <option value="overdue">{t("invoice.status.overdue")}</option>
+          </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="invoice-customer">Client (optional)</Label>
-          <select
-            id="invoice-customer"
-            name="customer_id"
-            defaultValue=""
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <option value="">No client</option>
+          <Label htmlFor="invoice-customer">{t("common.clientOptional")}</Label>
+          <Select id="invoice-customer" name="customer_id" defaultValue="">
+            <option value="">{t("common.noClient")}</option>
             {customers.map((customer) => (
               <option key={customer.id} value={customer.id}>
                 {customer.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="invoice-amount">Amount</Label>
+          <Label htmlFor="invoice-amount">{t("common.amount")}</Label>
           <Input
             id="invoice-amount"
             name="amount"
@@ -89,7 +84,7 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="invoice-currency">Currency</Label>
+          <Label htmlFor="invoice-currency">{t("common.currency")}</Label>
           <Input
             id="invoice-currency"
             name="currency"
@@ -98,17 +93,24 @@ export function InvoiceCreateForm({ customers }: InvoiceCreateFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="invoice-due">Due date (optional)</Label>
+          <Label htmlFor="invoice-due">{t("common.dueDateOptional")}</Label>
           <Input id="invoice-due" name="due_date" type="date" />
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
         <label className="flex items-center gap-2 text-sm text-foreground">
           <input type="checkbox" name="reminders_enabled" defaultChecked />
-          Enable polite email reminders
+          {t("invoice.enableReminders")}
         </label>
-        <SubmitButton />
+        <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
+          {onCancel && (
+            <Button variant="outline" type="button" onClick={onCancel}>
+              {t("common.cancel")}
+            </Button>
+          )}
+          <SubmitButton />
+        </div>
       </div>
     </form>
   );

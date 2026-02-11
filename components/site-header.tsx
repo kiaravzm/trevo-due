@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 
+import logo2x from "@/assets/trevo-due-logo@2x.png";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { LogoutButton } from "@/components/logout-button";
@@ -13,11 +15,15 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-semibold text-foreground hover:text-foreground/90"
-        >
-          <span className="text-lg">AgencyDocs</span>
+        <Link href="/" aria-label="TrevoDue - Página inicial">
+          <Image
+            src={logo2x}
+            alt="TrevoDue"
+            width={240}
+            height={64}
+            className="h-8 w-auto"
+            priority
+          />
         </Link>
         <nav className="flex items-center gap-2">
           {user ? (

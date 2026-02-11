@@ -1,9 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
-import { InvoiceCreateForm } from "./invoice-create-form";
-import { InvoiceListItem } from "./invoice-list-item";
+import { InvoicesCard } from "./invoices-card";
 import { PaywallCard } from "../billing/paywall-card";
 
 export default async function InvoicesPage() {
@@ -31,62 +30,24 @@ export default async function InvoicesPage() {
     <main className="min-h-screen bg-background">
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-foreground">Invoices</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{t("invoice.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Track billing details with clear status, dates, and amounts.
+            {t("invoice.pageDescription")}
           </p>
         </div>
 
-        {limitReached ? (
+        {limitReached && (
           <PaywallCard
-            title="You've reached the free invoice limit"
-            description="Upgrade to create unlimited invoices and keep billing moving."
+            title={t("invoice.invoiceLimitReachedTitle")}
+            description={t("invoice.invoiceLimitReachedDescription")}
           />
-        ) : (
-          <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle>Create invoice</CardTitle>
-              <CardDescription>
-                Use consistent numbers and status to keep clients aligned.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <InvoiceCreateForm customers={customers ?? []} />
-            </CardContent>
-          </Card>
         )}
 
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Saved invoices</CardTitle>
-            <CardDescription>Edit fields quickly and keep records accurate.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {invoices && invoices.length > 0 ? (
-              <>
-                <div className="hidden grid-cols-[1fr,1fr,1fr,1fr,1fr,auto] gap-4 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
-                  <span>Number</span>
-                  <span>Status</span>
-                  <span>Amount</span>
-                  <span>Due date</span>
-                  <span>Client</span>
-                  <span className="w-10" aria-hidden />
-                </div>
-                {invoices.map((invoice) => (
-                  <InvoiceListItem
-                    key={invoice.id}
-                    invoice={invoice}
-                    customers={customers ?? []}
-                  />
-                ))}
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No invoices yet. Create the first one above.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <InvoicesCard
+          invoices={invoices}
+          customers={customers ?? []}
+          limitReached={limitReached}
+        />
       </section>
     </main>
   );

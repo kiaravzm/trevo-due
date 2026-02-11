@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { StatusBadge } from "@/components/ui/badge";
+import { contractStatusLabel, t } from "@/lib/i18n";
 import { ContractDetailOverlay } from "./contract-detail-overlay";
 
 type Contract = {
@@ -19,12 +21,6 @@ type Customer = { id: string; name: string };
 type ContractListItemProps = {
   contract: Contract;
   customers: Customer[];
-};
-
-const statusLabels: Record<string, string> = {
-  signed: "Signed",
-  draft: "Draft",
-  pending: "Pending",
 };
 
 export function ContractListItem({ contract, customers }: ContractListItemProps) {
@@ -50,8 +46,17 @@ export function ContractListItem({ contract, customers }: ContractListItemProps)
           <span className="truncate font-medium text-foreground">
             {contract.title}
           </span>
-          <span className="truncate text-sm capitalize text-muted-foreground">
-            {statusLabels[contract.status] ?? contract.status}
+          <span className="truncate">
+            <StatusBadge
+              status={
+                contract.status === "signed"
+                  ? "signed"
+                  : contract.status === "draft"
+                    ? "draft"
+                    : "pending"
+              }
+              label={contractStatusLabel(contract.status)}
+            />
           </span>
           <span className="truncate text-sm text-muted-foreground">
             {customerName}
@@ -65,7 +70,7 @@ export function ContractListItem({ contract, customers }: ContractListItemProps)
             e.stopPropagation();
             setOverlayOpen(true);
           }}
-          aria-label="View or edit contract"
+          aria-label={t("contract.viewOrEditContract")}
         >
           <Pencil className="h-4 w-4" />
         </Button>

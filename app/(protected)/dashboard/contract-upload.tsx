@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAuthUser } from "@/lib/hooks/use-auth-user";
 
@@ -29,7 +30,7 @@ export function ContractUpload() {
     }
 
     if (!isPdf(selected)) {
-      setError("Please upload a PDF file.");
+      setError(t("actions.uploadPdfFile"));
       setFile(null);
       return;
     }
@@ -39,12 +40,12 @@ export function ContractUpload() {
 
   const handleUpload = async () => {
     if (!user) {
-      setError("You must be signed in to upload contracts.");
+      setError(t("actions.signInToUploadContractsShort"));
       return;
     }
 
     if (!file) {
-      setError("Select a PDF file before uploading.");
+      setError(t("actions.selectPdfBeforeUpload"));
       return;
     }
 
@@ -71,16 +72,16 @@ export function ContractUpload() {
       setFile(null);
     } catch (err) {
       setStatus("idle");
-      setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
+      setError(err instanceof Error ? err.message : t("actions.uploadFailed"));
     }
   };
 
   return (
     <div className="space-y-4">
       <div className="space-y-1">
-        <h3 className="text-base font-semibold text-foreground">Upload a signed contract</h3>
+        <h3 className="text-base font-semibold text-foreground">{t("contract.uploadSignedTitle")}</h3>
         <p className="text-sm text-muted-foreground">
-          Files are stored in a private bucket and only visible to the account owner.
+          {t("contract.uploadSignedStorageNote")}
         </p>
       </div>
 
@@ -99,7 +100,7 @@ export function ContractUpload() {
 
         {status === "success" ? (
           <p className="rounded-md border border-border bg-secondary px-3 py-2 text-sm text-secondary-foreground">
-            Contract uploaded securely.
+            {t("contract.uploadedSecurely")}
           </p>
         ) : null}
 

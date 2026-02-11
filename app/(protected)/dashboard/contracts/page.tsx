@@ -1,9 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscriptionStatus } from "@/lib/billing/subscription";
 
-import { ContractCreateForm } from "./contract-create-form";
-import { ContractListItem } from "./contract-list-item";
+import { ContractsCard } from "./contracts-card";
 import { PaywallCard } from "../billing/paywall-card";
 
 export default async function ContractsPage() {
@@ -29,60 +28,24 @@ export default async function ContractsPage() {
     <main className="min-h-screen bg-background">
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-foreground">Contracts</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{t("contract.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Upload signed agreements securely and keep them tied to the right client.
+            {t("contract.uploadSignedDescription")}
           </p>
         </div>
 
-        {limitReached ? (
+        {limitReached && (
           <PaywallCard
-            title="You've reached the free contract limit"
-            description="Upgrade to keep unlimited agreements in your workspace."
+            title={t("contract.contractLimitReachedTitle")}
+            description={t("contract.contractLimitReachedDescription")}
           />
-        ) : (
-          <Card className="shadow-soft">
-            <CardHeader>
-              <CardTitle>Upload contract</CardTitle>
-              <CardDescription>
-                PDF files are stored privately and scoped to your account.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ContractCreateForm customers={customers ?? []} />
-            </CardContent>
-          </Card>
         )}
 
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Saved contracts</CardTitle>
-            <CardDescription>Update status or remove obsolete files.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {contracts && contracts.length > 0 ? (
-              <>
-                <div className="hidden grid-cols-[1.5fr,1fr,1fr,auto] gap-4 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
-                  <span>Title</span>
-                  <span>Status</span>
-                  <span>Client</span>
-                  <span className="w-10" aria-hidden />
-                </div>
-                {contracts.map((contract) => (
-                  <ContractListItem
-                    key={contract.id}
-                    contract={contract}
-                    customers={customers ?? []}
-                  />
-                ))}
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No contracts yet. Upload your first PDF above.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <ContractsCard
+          contracts={contracts}
+          customers={customers ?? []}
+          limitReached={limitReached}
+        />
       </section>
     </main>
   );

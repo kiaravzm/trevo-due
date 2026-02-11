@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { CheckoutForm } from "./checkout-form";
@@ -11,7 +12,7 @@ function StatusMessage({ status }: { status?: string }) {
   if (status === "success") {
     return (
       <p className="rounded-md border border-border bg-secondary px-3 py-2 text-sm text-secondary-foreground">
-        Subscription started. Your access is ready.
+        {t("billing.subscriptionStarted")}
       </p>
     );
   }
@@ -19,7 +20,7 @@ function StatusMessage({ status }: { status?: string }) {
   if (status === "cancel") {
     return (
       <p className="rounded-md border border-border bg-secondary px-3 py-2 text-sm text-secondary-foreground">
-        Checkout canceled. You can resume anytime.
+        {t("billing.checkoutCanceled")}
       </p>
     );
   }
@@ -27,7 +28,7 @@ function StatusMessage({ status }: { status?: string }) {
   if (status === "error") {
     return (
       <p className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-        Something went wrong. Please try again.
+        {t("billing.somethingWentWrong")}
       </p>
     );
   }
@@ -43,16 +44,16 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
     .maybeSingle();
 
   const trialInfo = subscription?.trial_ends_at
-    ? `Trial ends on ${new Date(subscription.trial_ends_at).toLocaleDateString("en-US")}`
-    : "Start a trial to explore every feature before billing.";
+    ? t("billing.trialEndsOn", { date: new Date(subscription.trial_ends_at).toLocaleDateString("en-US") })
+    : t("billing.startTrial");
 
   return (
     <main className="min-h-screen bg-background">
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-foreground">Billing</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{t("billing.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Simple monthly pricing with a clear trial window. No surprises.
+            {t("billing.description")}
           </p>
         </div>
 
@@ -60,21 +61,21 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
 
         <Card className="shadow-soft">
           <CardHeader>
-            <CardTitle>AgencyDocs Monthly</CardTitle>
+            <CardTitle>{t("billing.agencyDocsMonthly")}</CardTitle>
             <CardDescription>
               {trialInfo}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Unlimited clients, contracts, and invoices</li>
-              <li>Private storage for signed agreements</li>
-              <li>Secure reminders and billing controls</li>
+              <li>{t("billing.unlimitedClientsContractsInvoices")}</li>
+              <li>{t("billing.privateStorage")}</li>
+              <li>{t("billing.secureReminders")}</li>
             </ul>
 
             {subscription?.status === "active" ? (
               <p className="rounded-md border border-border bg-secondary px-3 py-2 text-sm text-secondary-foreground">
-                Your subscription is active.
+                {t("billing.subscriptionActive")}
               </p>
             ) : (
               <CheckoutForm />

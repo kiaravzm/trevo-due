@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { t } from "@/lib/i18n";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
@@ -39,7 +41,7 @@ export function LoginForm() {
         throw signInError;
       }
 
-      setMessage("Check your inbox for a secure magic link to finish signing in.");
+      setMessage(t("login.checkInbox"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to send the magic link.");
     } finally {
@@ -51,30 +53,30 @@ export function LoginForm() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md shadow-soft">
         <CardHeader>
-          <CardTitle>Sign in to AgencyDocs</CardTitle>
+          <CardTitle>{t("login.title")}</CardTitle>
           <CardDescription>
-            A secure, passwordless experience designed for teams that value trust and clarity.
+            {t("login.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-5" onSubmit={handleLogin}>
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground" htmlFor="email">
-                Work email
+                {t("login.workEmail")}
               </label>
-              <input
+              <Input
                 id="email"
                 type="email"
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
-                placeholder="you@agency.com"
+                className="h-11"
+                placeholder={t("login.emailPlaceholder")}
               />
             </div>
 
             <Button className="w-full" size="lg" type="submit" disabled={loading}>
-              {loading ? "Sending magic link..." : "Send magic link"}
+              {loading ? t("login.sendingMagicLink") : t("login.sendMagicLink")}
             </Button>
 
             {message ? (
@@ -91,7 +93,7 @@ export function LoginForm() {
           </form>
 
           <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            We never share your email. The link expires quickly and keeps your access secure.
+            {t("login.privacyNote")}
           </p>
         </CardContent>
       </Card>

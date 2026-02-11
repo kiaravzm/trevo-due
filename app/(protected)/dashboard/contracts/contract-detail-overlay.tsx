@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DetailOverlay } from "@/components/detail-overlay";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { contractStatusLabel, t } from "@/lib/i18n";
 import {
   deleteContractAction,
   getContractSignedUrlAction,
@@ -42,17 +44,12 @@ type ContractDetailOverlayProps = {
 };
 
 const initialState = { status: "idle" as const, message: null as string | null };
-const statusLabels: Record<string, string> = {
-  signed: "Signed",
-  draft: "Draft",
-  pending: "Pending",
-};
 
 function SaveButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving..." : "Save"}
+      {pending ? t("common.saving") : t("common.save")}
     </Button>
   );
 }
@@ -100,7 +97,7 @@ export function ContractDetailOverlay({
     formData.set("id", contract.id);
     formData.set("file_path", contract.file_path);
     await deleteContractAction(formData);
-    toast.success("Contract deleted successfully.");
+    toast.success(t("actions.contractDeleted"));
     setDeleteDialogOpen(false);
     onOpenChange(false);
   };
@@ -108,12 +105,12 @@ export function ContractDetailOverlay({
   const footer = isEditing ? null : (
     <>
       <Button variant="outline" onClick={() => onOpenChange(false)}>
-        Close
+        {t("common.close")}
       </Button>
       <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-        Delete
+        {t("common.delete")}
       </Button>
-      <Button onClick={() => setIsEditing(true)}>Edit</Button>
+      <Button onClick={() => setIsEditing(true)}>{t("common.edit")}</Button>
     </>
   );
 
@@ -130,43 +127,41 @@ export function ContractDetailOverlay({
             <input type="hidden" name="id" value={contract.id} />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-contract-title">Title</Label>
+                <Label htmlFor="edit-contract-title">{t("contract.titleLabel")}</Label>
                 <Input
                   id="edit-contract-title"
                   name="title"
                   defaultValue={contract.title}
                   required
-                  placeholder="Contract title"
+                  placeholder={t("contract.contractTitle")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-contract-status">Status</Label>
-                <select
+                <Label htmlFor="edit-contract-status">{t("common.status")}</Label>
+                <Select
                   id="edit-contract-status"
                   name="status"
                   defaultValue={contract.status}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  <option value="signed">Signed</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
-                </select>
+                  <option value="signed">{t("contract.status.signed")}</option>
+                  <option value="draft">{t("contract.status.draft")}</option>
+                  <option value="pending">{t("contract.status.pending")}</option>
+                </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-contract-customer">Client</Label>
-                <select
+                <Label htmlFor="edit-contract-customer">{t("common.client")}</Label>
+                <Select
                   id="edit-contract-customer"
                   name="customer_id"
                   defaultValue={contract.customer_id ?? ""}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  <option value="">No client</option>
+                  <option value="">{t("common.noClient")}</option>
                   {customers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
             </div>
             <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
@@ -175,7 +170,7 @@ export function ContractDetailOverlay({
                 type="button"
                 onClick={() => setIsEditing(false)}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <SaveButton />
             </div>
@@ -183,17 +178,17 @@ export function ContractDetailOverlay({
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Title</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("contract.titleLabel")}</p>
               <p className="text-foreground">{contract.title}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Status</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.status")}</p>
               <p className="text-foreground capitalize">
-                {statusLabels[contract.status] ?? contract.status}
+                {contractStatusLabel(contract.status)}
               </p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Client</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.client")}</p>
               <p className="text-foreground">{customerName || "—"}</p>
             </div>
             <div className="space-y-2">
@@ -206,12 +201,12 @@ export function ContractDetailOverlay({
                   className="inline-flex items-center gap-2 rounded-md border border-input bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
                 >
                   <FileText className="h-4 w-4" />
-                  View PDF
+                  {t("contract.viewPdf")}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Loading link...
+                  {t("contract.loadingLink")}
                 </p>
               )}
             </div>
@@ -222,16 +217,15 @@ export function ContractDetailOverlay({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete contract?</AlertDialogTitle>
+            <AlertDialogTitle>{t("contract.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove &quot;{contract.title}&quot; and its
-              PDF file. This action cannot be undone.
+              {t("contract.deleteDescription", { title: contract.title })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <Button variant="destructive" onClick={() => handleDelete()}>
-              Delete
+              {t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

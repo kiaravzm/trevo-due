@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DetailOverlay } from "@/components/detail-overlay";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -17,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { invoiceStatusLabel, t } from "@/lib/i18n";
 import {
   deleteInvoiceAction,
   sendInvoiceReminderAction,
@@ -48,11 +50,6 @@ const reminderInitialState = {
   status: "idle" as const,
   message: null as string | null,
 };
-const statusLabels: Record<string, string> = {
-  open: "Open",
-  paid: "Paid",
-  overdue: "Overdue",
-};
 
 function formatAmount(amountCents: number) {
   return (amountCents / 100).toFixed(2);
@@ -62,7 +59,7 @@ function SaveButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving..." : "Save"}
+      {pending ? t("common.saving") : t("common.save")}
     </Button>
   );
 }
@@ -71,7 +68,7 @@ function ReminderButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" variant="secondary" disabled={pending}>
-      {pending ? "Sending..." : "Send reminder"}
+      {pending ? t("common.sending") : t("invoice.sendReminder")}
     </Button>
   );
 }
@@ -115,7 +112,7 @@ export function InvoiceDetailOverlay({
     const formData = new FormData();
     formData.set("id", invoice.id);
     await deleteInvoiceAction(formData);
-    toast.success("Invoice deleted successfully.");
+    toast.success(t("actions.invoiceDeleted"));
     setDeleteDialogOpen(false);
     onOpenChange(false);
   };
@@ -123,12 +120,12 @@ export function InvoiceDetailOverlay({
   const footer = isEditing ? null : (
     <>
       <Button variant="outline" onClick={() => onOpenChange(false)}>
-        Close
+        {t("common.close")}
       </Button>
       <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-        Delete
+        {t("common.delete")}
       </Button>
-      <Button onClick={() => setIsEditing(true)}>Edit</Button>
+      <Button onClick={() => setIsEditing(true)}>{t("common.edit")}</Button>
     </>
   );
 
@@ -137,7 +134,7 @@ export function InvoiceDetailOverlay({
       <DetailOverlay
         open={open}
         onOpenChange={onOpenChange}
-        title={`Invoice ${invoice.number}`}
+        title={`${t("dashboard.invoiceLabel")} ${invoice.number}`}
         footer={footer}
       >
         {isEditing ? (
@@ -145,7 +142,7 @@ export function InvoiceDetailOverlay({
             <input type="hidden" name="id" value={invoice.id} />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-invoice-number">Invoice number</Label>
+                <Label htmlFor="edit-invoice-number">{t("invoice.invoiceNumber")}</Label>
                 <Input
                   id="edit-invoice-number"
                   name="number"
@@ -155,21 +152,20 @@ export function InvoiceDetailOverlay({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-invoice-status">Status</Label>
-                <select
+                <Label htmlFor="edit-invoice-status">{t("common.status")}</Label>
+                <Select
                   id="edit-invoice-status"
                   name="status"
                   defaultValue={invoice.status}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  <option value="open">Open</option>
-                  <option value="paid">Paid</option>
-                  <option value="overdue">Overdue</option>
-                </select>
+                  <option value="open">{t("invoice.status.open")}</option>
+                  <option value="paid">{t("invoice.status.paid")}</option>
+                  <option value="overdue">{t("invoice.status.overdue")}</option>
+                </Select>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="edit-invoice-amount">Amount</Label>
+                  <Label htmlFor="edit-invoice-amount">{t("common.amount")}</Label>
                   <Input
                     id="edit-invoice-amount"
                     name="amount"
@@ -179,7 +175,7 @@ export function InvoiceDetailOverlay({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="edit-invoice-currency">Currency</Label>
+                  <Label htmlFor="edit-invoice-currency">{t("common.currency")}</Label>
                   <Input
                     id="edit-invoice-currency"
                     name="currency"
@@ -189,7 +185,7 @@ export function InvoiceDetailOverlay({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-invoice-due">Due date</Label>
+                <Label htmlFor="edit-invoice-due">{t("common.dueDate")}</Label>
                 <Input
                   id="edit-invoice-due"
                   name="due_date"
@@ -198,20 +194,19 @@ export function InvoiceDetailOverlay({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-invoice-customer">Client</Label>
-                <select
+                <Label htmlFor="edit-invoice-customer">{t("common.client")}</Label>
+                <Select
                   id="edit-invoice-customer"
                   name="customer_id"
                   defaultValue={invoice.customer_id ?? ""}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  <option value="">No client</option>
+                  <option value="">{t("common.noClient")}</option>
                   {customers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
               <label className="flex items-center gap-2 text-sm text-foreground">
                 <input
@@ -220,7 +215,7 @@ export function InvoiceDetailOverlay({
                   defaultChecked={invoice.reminders_enabled}
                   className="h-4 w-4 rounded border-input"
                 />
-                Allow email reminders for this invoice
+                {t("invoice.allowEmailReminders")}
               </label>
             </div>
             <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
@@ -229,7 +224,7 @@ export function InvoiceDetailOverlay({
                 type="button"
                 onClick={() => setIsEditing(false)}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <SaveButton />
             </div>
@@ -238,38 +233,38 @@ export function InvoiceDetailOverlay({
           <div className="space-y-4">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
-                Invoice number
+                {t("invoice.invoiceNumber")}
               </p>
               <p className="text-foreground">{invoice.number}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Status</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.status")}</p>
               <p className="text-foreground capitalize">
-                {statusLabels[invoice.status] ?? invoice.status}
+                {invoiceStatusLabel(invoice.status)}
               </p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Amount</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.amount")}</p>
               <p className="text-foreground">
                 {invoice.currency} {formatAmount(invoice.amount_cents)}
               </p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
-                Due date
+                {t("common.dueDate")}
               </p>
               <p className="text-foreground">{invoice.due_date ?? "—"}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Client</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.client")}</p>
               <p className="text-foreground">{customerName || "—"}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
-                Email reminders
+                {t("invoice.emailReminders")}
               </p>
               <p className="text-foreground">
-                {invoice.reminders_enabled ? "Enabled" : "Disabled"}
+                {invoice.reminders_enabled ? t("common.enabled") : t("common.disabled")}
               </p>
             </div>
             {invoice.reminders_enabled && (
@@ -285,16 +280,15 @@ export function InvoiceDetailOverlay({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete invoice?</AlertDialogTitle>
+            <AlertDialogTitle>{t("invoice.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove invoice {invoice.number}. This action
-              cannot be undone.
+              {t("invoice.deleteDescription", { number: invoice.number })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <Button variant="destructive" onClick={() => handleDelete()}>
-              Delete
+              {t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

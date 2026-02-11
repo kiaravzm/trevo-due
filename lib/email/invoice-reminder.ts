@@ -6,34 +6,47 @@ type InvoiceReminderPayload = {
   senderName: string;
 };
 
-export function buildInvoiceReminderEmail(payload: InvoiceReminderPayload) {
+type TranslateFn = (key: string, params?: Record<string, string>) => string;
+
+export function buildInvoiceReminderEmail(
+  payload: InvoiceReminderPayload,
+  getMessage: TranslateFn
+) {
   const { clientName, invoiceNumber, amount, dueDate, senderName } = payload;
-  const dueLine = dueDate ? `Due date: ${dueDate}` : "Due date: not specified";
+  const dueLine = dueDate
+    ? getMessage("email.reminderDueDate", { date: dueDate })
+    : getMessage("email.reminderDueDateNotSpecified");
 
-  const subject = `Friendly reminder: Invoice ${invoiceNumber}`;
-  const text = `Hi ${clientName},
+  const subject = getMessage("email.reminderSubject", { number: invoiceNumber });
+  const intro = getMessage("email.reminderBodyIntro", {
+    number: invoiceNumber,
+    amount,
+  });
+  const outro = getMessage("email.reminderBodyOutro");
+  const bestRegards = getMessage("email.reminderBestRegards");
+  const hi = getMessage("email.reminderHi", { name: clientName });
 
-I hope you are doing well. This is a gentle reminder about invoice ${invoiceNumber} for ${amount}.
+  const text = `${hi}
+
+${intro}
 ${dueLine}
 
-If you have any questions or need another copy, just let me know. Thank you for your partnership.
+${outro}
 
-Best regards,
+${bestRegards},
 ${senderName}`;
 
+  const introHtml = intro
+    .replace(/\n/g, " ")
+    .replace(invoiceNumber, `<strong>${invoiceNumber}</strong>`)
+    .replace(amount, `<strong>${amount}</strong>`);
   const html = `
   <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
-    <p>Hi ${clientName},</p>
-    <p>
-      I hope you are doing well. This is a gentle reminder about invoice
-      <strong>${invoiceNumber}</strong> for <strong>${amount}</strong>.
-    </p>
+    <p>${hi}</p>
+    <p>${introHtml}</p>
     <p>${dueLine}</p>
-    <p>
-      If you have any questions or need another copy, just let me know.
-      Thank you for your partnership.
-    </p>
-    <p>Best regards,<br/>${senderName}</p>
+    <p>${outro}</p>
+    <p>${bestRegards},<br/>${senderName}</p>
   </div>
   `;
 

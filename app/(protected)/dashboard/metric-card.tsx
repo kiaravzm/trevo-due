@@ -11,9 +11,9 @@ type MetricCardProps = {
 
 const statusToneClasses: Record<NonNullable<MetricCardProps["statusTone"]>, string> = {
   neutral: "text-muted-foreground",
-  success: "text-emerald-600",
-  warning: "text-amber-600",
-  danger: "text-rose-600",
+  success: "text-[hsl(var(--success))]",
+  warning: "text-[hsl(var(--warning))]",
+  danger: "text-[hsl(var(--error))]",
 };
 
 export function MetricCard({

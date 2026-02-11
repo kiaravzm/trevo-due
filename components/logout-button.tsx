@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type LogoutButtonProps = {
@@ -16,7 +17,7 @@ export function LogoutButton({
   variant = "outline",
   size = "default",
   className,
-  children = "Sair",
+  children = t("common.logout"),
 }: LogoutButtonProps) {
   const router = useRouter();
 

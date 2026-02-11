@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { buildInvoiceReminderEmail } from "@/lib/email/invoice-reminder";
+import { t } from "@/lib/i18n";
 import { getStripeServerClient } from "@/lib/stripe/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type ActionState = {
   status: "idle" | "success" | "error";
@@ -118,16 +119,16 @@ export async function createClientAction(_prev: ActionState, formData: FormData)
   const company = String(formData.get("company") ?? "").trim();
 
   if (!name) {
-    return createState("error", "Client name is required.");
+    return createState("error", t("actions.clientNameRequired"));
   }
 
   if (email && !emailRegex.test(email)) {
-    return createState("error", "Please enter a valid email address.");
+    return createState("error", t("actions.validEmail"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to create clients.");
+    return createState("error", t("actions.signInToCreateClients"));
   }
 
   const { error } = await supabase.from("customers").insert({
@@ -142,7 +143,7 @@ export async function createClientAction(_prev: ActionState, formData: FormData)
   }
 
   revalidatePath("/dashboard/clients");
-  return createState("success", "Client saved successfully.");
+  return createState("success", t("actions.clientSaved"));
 }
 
 export async function updateClientAction(_prev: ActionState, formData: FormData) {
@@ -152,20 +153,20 @@ export async function updateClientAction(_prev: ActionState, formData: FormData)
   const company = String(formData.get("company") ?? "").trim();
 
   if (!id) {
-    return createState("error", "Missing client ID.");
+    return createState("error", t("actions.missingClientId"));
   }
 
   if (!name) {
-    return createState("error", "Client name is required.");
+    return createState("error", t("actions.clientNameRequired"));
   }
 
   if (email && !emailRegex.test(email)) {
-    return createState("error", "Please enter a valid email address.");
+    return createState("error", t("actions.validEmail"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to update clients.");
+    return createState("error", t("actions.signInToUpdateClients"));
   }
 
   const { error } = await supabase
@@ -178,7 +179,7 @@ export async function updateClientAction(_prev: ActionState, formData: FormData)
   }
 
   revalidatePath("/dashboard/clients");
-  return createState("success", "Client updated successfully.");
+  return createState("success", t("actions.clientUpdated"));
 }
 
 export async function deleteClientAction(formData: FormData) {
@@ -202,29 +203,26 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
   const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
 
   if (!number) {
-    return createState("error", "Invoice number is required.");
+    return createState("error", t("actions.invoiceNumberRequired"));
   }
 
   const amountCents = parseCurrencyToCents(amount);
   if (amountCents === null) {
-    return createState("error", "Enter a valid amount, like 1250.00.");
+    return createState("error", t("actions.validAmount"));
   }
 
   if (!currency) {
-    return createState("error", "Currency is required.");
+    return createState("error", t("actions.currencyRequired"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to create invoices.");
+    return createState("error", t("actions.signInToCreateInvoices"));
   }
 
   const limitReached = await hasReachedFreeInvoiceLimit(supabase, user.id);
   if (limitReached) {
-    return createState(
-      "error",
-      "Free plan reached. Upgrade to create more than 3 invoices."
-    );
+    return createState("error", t("actions.freePlanInvoices"));
   }
 
   const { error } = await supabase.from("invoices").insert({
@@ -243,7 +241,7 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
   }
 
   revalidatePath("/dashboard/invoices");
-  return createState("success", "Invoice created successfully.");
+  return createState("success", t("actions.invoiceCreated"));
 }
 
 export async function updateInvoiceAction(_prev: ActionState, formData: FormData) {
@@ -257,21 +255,21 @@ export async function updateInvoiceAction(_prev: ActionState, formData: FormData
   const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
 
   if (!id) {
-    return createState("error", "Missing invoice ID.");
+    return createState("error", t("actions.missingInvoiceId"));
   }
 
   if (!number) {
-    return createState("error", "Invoice number is required.");
+    return createState("error", t("actions.invoiceNumberRequired"));
   }
 
   const amountCents = parseCurrencyToCents(amount);
   if (amountCents === null) {
-    return createState("error", "Enter a valid amount, like 1250.00.");
+    return createState("error", t("actions.validAmount"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to update invoices.");
+    return createState("error", t("actions.signInToUpdateInvoices"));
   }
 
   const { error } = await supabase
@@ -292,7 +290,7 @@ export async function updateInvoiceAction(_prev: ActionState, formData: FormData
   }
 
   revalidatePath("/dashboard/invoices");
-  return createState("success", "Invoice updated successfully.");
+  return createState("success", t("actions.invoiceUpdated"));
 }
 
 export async function deleteInvoiceAction(formData: FormData) {
@@ -313,12 +311,12 @@ export async function sendInvoiceReminderAction(
   const invoiceId = String(formData.get("invoice_id") ?? "").trim();
 
   if (!invoiceId) {
-    return createState("error", "Missing invoice ID.");
+    return createState("error", t("actions.missingInvoiceId"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to send reminders.");
+    return createState("error", t("actions.signInToSendReminders"));
   }
 
   const { data: invoice, error } = await supabase
@@ -328,15 +326,15 @@ export async function sendInvoiceReminderAction(
     .maybeSingle();
 
   if (error || !invoice) {
-    return createState("error", "Invoice not found.");
+    return createState("error", t("actions.invoiceNotFound"));
   }
 
   if (!invoice.reminders_enabled) {
-    return createState("error", "Reminders are disabled for this invoice.");
+    return createState("error", t("actions.remindersDisabled"));
   }
 
   if (!invoice.customer_id) {
-    return createState("error", "Assign a client before sending reminders.");
+    return createState("error", t("actions.assignClientBeforeReminder"));
   }
 
   const { data: customer } = await supabase
@@ -346,17 +344,20 @@ export async function sendInvoiceReminderAction(
     .maybeSingle();
 
   if (!customer?.email) {
-    return createState("error", "Client email is missing.");
+    return createState("error", t("actions.clientEmailMissing"));
   }
 
   const amount = `${invoice.currency} ${(invoice.amount_cents / 100).toFixed(2)}`;
-  const reminder = buildInvoiceReminderEmail({
-    clientName: customer.name,
-    invoiceNumber: invoice.number,
-    amount,
-    dueDate: invoice.due_date,
-    senderName: "AgencyDocs",
-  });
+  const reminder = buildInvoiceReminderEmail(
+    {
+      clientName: customer.name,
+      invoiceNumber: invoice.number,
+      amount,
+      dueDate: invoice.due_date,
+      senderName: "AgencyDocs",
+    },
+    (key, params) => t(key, params as Record<string, string | number>)
+  );
 
   const resend = getResend();
   const from = getReminderSender();
@@ -373,7 +374,7 @@ export async function sendInvoiceReminderAction(
     return createState("error", sendError.message);
   }
 
-  return createState("success", "Reminder sent successfully.");
+  return createState("success", t("actions.reminderSent"));
 }
 
 export async function startCheckoutAction() {
@@ -432,28 +433,25 @@ export async function createContractAction(_prev: ActionState, formData: FormDat
   const file = formData.get("file");
 
   if (!title) {
-    return createState("error", "Contract title is required.");
+    return createState("error", t("actions.contractTitleRequired"));
   }
 
   if (!(file instanceof File)) {
-    return createState("error", "Please attach a PDF file.");
+    return createState("error", t("actions.attachPdf"));
   }
 
   if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
-    return createState("error", "Only PDF files are allowed.");
+    return createState("error", t("actions.onlyPdfAllowed"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to upload contracts.");
+    return createState("error", t("actions.signInToUploadContracts"));
   }
 
   const limitReached = await hasReachedFreeContractLimit(supabase, user.id);
   if (limitReached) {
-    return createState(
-      "error",
-      "Free plan reached. Upgrade to upload more than 3 contracts."
-    );
+    return createState("error", t("actions.freePlanContracts"));
   }
 
   const filename = `${crypto.randomUUID()}.pdf`;
@@ -480,7 +478,7 @@ export async function createContractAction(_prev: ActionState, formData: FormDat
   }
 
   revalidatePath("/dashboard/contracts");
-  return createState("success", "Contract uploaded successfully.");
+  return createState("success", t("actions.contractUploaded"));
 }
 
 export async function updateContractAction(_prev: ActionState, formData: FormData) {
@@ -490,16 +488,16 @@ export async function updateContractAction(_prev: ActionState, formData: FormDat
   const customerId = String(formData.get("customer_id") ?? "").trim();
 
   if (!id) {
-    return createState("error", "Missing contract ID.");
+    return createState("error", t("actions.missingContractId"));
   }
 
   if (!title) {
-    return createState("error", "Contract title is required.");
+    return createState("error", t("actions.contractTitleRequired"));
   }
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return createState("error", "You need to be signed in to update contracts.");
+    return createState("error", t("actions.signInToUpdateContracts"));
   }
 
   const { error } = await supabase
@@ -512,7 +510,7 @@ export async function updateContractAction(_prev: ActionState, formData: FormDat
   }
 
   revalidatePath("/dashboard/contracts");
-  return createState("success", "Contract updated successfully.");
+  return createState("success", t("actions.contractUpdated"));
 }
 
 export async function deleteContractAction(formData: FormData) {
@@ -537,7 +535,7 @@ export async function getContractSignedUrlAction(filePath: string) {
 
   const { supabase, user } = await getAuthUser();
   if (!user) {
-    return { error: "You need to be signed in to view contracts." };
+    return { error: t("actions.signInToViewContracts") };
   }
 
   const { data, error } = await supabase.storage

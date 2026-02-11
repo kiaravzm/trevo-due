@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { t } from "@/lib/i18n";
 import { deleteClientAction, updateClientAction } from "../actions";
 
 type Client = {
@@ -38,7 +39,7 @@ function SaveButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving..." : "Save"}
+      {pending ? t("common.saving") : t("common.save")}
     </Button>
   );
 }
@@ -66,7 +67,7 @@ export function ClientDetailOverlay({
     const formData = new FormData();
     formData.set("id", client.id);
     await deleteClientAction(formData);
-    toast.success("Client deleted successfully.");
+    toast.success(t("actions.clientDeleted"));
     setDeleteDialogOpen(false);
     onOpenChange(false);
   };
@@ -74,12 +75,12 @@ export function ClientDetailOverlay({
   const footer = isEditing ? null : (
     <>
       <Button variant="outline" onClick={() => onOpenChange(false)}>
-        Close
+        {t("common.close")}
       </Button>
       <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-        Delete
+        {t("common.delete")}
       </Button>
-      <Button onClick={() => setIsEditing(true)}>Edit</Button>
+      <Button onClick={() => setIsEditing(true)}>{t("common.edit")}</Button>
     </>
   );
 
@@ -99,38 +100,38 @@ export function ClientDetailOverlay({
             <input type="hidden" name="id" value={client.id} />
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-client-name">Name</Label>
+                <Label htmlFor="edit-client-name">{t("common.name")}</Label>
                 <Input
                   id="edit-client-name"
                   name="name"
                   defaultValue={client.name}
                   required
-                  placeholder="Client name"
+                  placeholder={t("client.clientName")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-client-email">Email (optional)</Label>
+                <Label htmlFor="edit-client-email">{t("common.emailOptional")}</Label>
                 <Input
                   id="edit-client-email"
                   name="email"
                   type="email"
                   defaultValue={client.email ?? ""}
-                  placeholder="hello@example.com"
+                  placeholder={t("client.editEmailPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-client-company">Company (optional)</Label>
+                <Label htmlFor="edit-client-company">{t("common.companyOptional")}</Label>
                 <Input
                   id="edit-client-company"
                   name="company"
                   defaultValue={client.company ?? ""}
-                  placeholder="Company name"
+                  placeholder={t("client.companyNamePlaceholder")}
                 />
               </div>
             </div>
             <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
               <Button variant="outline" type="button" onClick={() => setIsEditing(false)}>
-                Cancel
+                {t("common.cancel")}
               </Button>
               <SaveButton />
             </div>
@@ -138,15 +139,15 @@ export function ClientDetailOverlay({
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Name</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.name")}</p>
               <p className="text-foreground">{client.name}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Email</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.email")}</p>
               <p className="text-foreground">{client.email || "—"}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Company</p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.company")}</p>
               <p className="text-foreground">{client.company || "—"}</p>
             </div>
           </div>
@@ -156,19 +157,18 @@ export function ClientDetailOverlay({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete client?</AlertDialogTitle>
+            <AlertDialogTitle>{t("client.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove {client.name} from your records. This
-              action cannot be undone.
+              {t("client.deleteDescription", { name: client.name })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <Button
               variant="destructive"
               onClick={() => handleDelete()}
             >
-              Delete
+              {t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 
+import logo2x from "@/assets/trevo-due-logo@2x.png";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { LogoutButton } from "@/components/logout-button";
@@ -16,9 +18,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     <>
       <Link
         href="/dashboard"
-        className="mb-6 block px-3 py-2 text-sm font-semibold text-foreground hover:text-foreground/90"
+        className="mb-6 block px-3 py-2"
+        aria-label="TrevoDue - Ir para o dashboard"
       >
-        AgencyDocs
+        <Image
+          src={logo2x}
+          alt="TrevoDue"
+          width={240}
+          height={64}
+          className="h-8 w-auto"
+          priority
+        />
       </Link>
       <DashboardNav />
       <div className="mt-6 pt-4 border-t border-border">
@@ -47,9 +57,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         </Button>
         <Link
           href="/dashboard"
-          className="font-semibold text-foreground hover:text-foreground/90"
+          aria-label="TrevoDue - Ir para o dashboard"
         >
-          AgencyDocs
+          <Image
+            src={logo2x}
+            alt="TrevoDue"
+            width={200}
+            height={56}
+            className="h-7 w-auto"
+            priority
+          />
         </Link>
       </header>
 

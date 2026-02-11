@@ -7,10 +7,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { t } from "@/lib/i18n";
 import { createContractAction } from "../actions";
 
 type ContractCreateFormProps = {
   customers: Array<{ id: string; name: string }>;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 };
 
 const initialState = { status: "idle" as const, message: null as string | null };
@@ -19,27 +23,28 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Uploading..." : "Upload contract"}
+      {pending ? t("contract.uploading") : t("contract.uploadContract")}
     </Button>
   );
 }
 
-export function ContractCreateForm({ customers }: ContractCreateFormProps) {
+export function ContractCreateForm({ customers, onSuccess, onCancel }: ContractCreateFormProps) {
   const [state, formAction] = useFormState(createContractAction, initialState);
 
   useEffect(() => {
     if (state.status === "success" && state.message) {
       toast.success(state.message);
+      onSuccess?.();
     } else if (state.status === "error" && state.message) {
       toast.error(state.message);
     }
-  }, [state.status, state.message]);
+  }, [state.status, state.message, onSuccess]);
 
   return (
     <form action={formAction} encType="multipart/form-data" className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="contract-title">Contract title</Label>
+          <Label htmlFor="contract-title">{t("contract.contractTitle")}</Label>
           <Input
             id="contract-title"
             name="title"
@@ -48,38 +53,28 @@ export function ContractCreateForm({ customers }: ContractCreateFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="contract-status">Status</Label>
-          <select
-            id="contract-status"
-            name="status"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            defaultValue="signed"
-          >
-            <option value="signed">Signed</option>
-            <option value="draft">Draft</option>
-            <option value="pending">Pending</option>
-          </select>
+          <Label htmlFor="contract-status">{t("common.status")}</Label>
+          <Select id="contract-status" name="status" defaultValue="signed">
+            <option value="signed">{t("contract.status.signed")}</option>
+            <option value="draft">{t("contract.status.draft")}</option>
+            <option value="pending">{t("contract.status.pending")}</option>
+          </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="contract-client">Client (optional)</Label>
-          <select
-            id="contract-client"
-            name="customer_id"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            defaultValue=""
-          >
-            <option value="">No client</option>
+          <Label htmlFor="contract-client">{t("common.clientOptional")}</Label>
+          <Select id="contract-client" name="customer_id" defaultValue="">
+            <option value="">{t("common.noClient")}</option>
             {customers.map((customer) => (
               <option key={customer.id} value={customer.id}>
                 {customer.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contract-file">PDF file</Label>
+        <Label htmlFor="contract-file">{t("contract.pdfFile")}</Label>
         <input
           id="contract-file"
           name="file"
@@ -90,7 +85,14 @@ export function ContractCreateForm({ customers }: ContractCreateFormProps) {
         />
       </div>
 
-      <SubmitButton />
+      <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
+        {onCancel && (
+          <Button variant="outline" type="button" onClick={onCancel}>
+            {t("common.cancel")}
+          </Button>
+        )}
+        <SubmitButton />
+      </div>
     </form>
   );
 }

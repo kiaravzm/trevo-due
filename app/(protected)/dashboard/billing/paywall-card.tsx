@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
 
 type PaywallCardProps = {
   title: string;
@@ -17,19 +18,18 @@ export function PaywallCard({ title, description }: PaywallCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          You can keep using clients for free. Upgrade only when you need contract storage or
-          invoice tracking.
+          {t("billing.paywallNote")}
         </p>
         <div className="flex flex-wrap gap-3">
           <Button asChild size="lg">
-            <Link href="/dashboard/billing">See monthly plan</Link>
+            <Link href="/dashboard/billing">{t("billing.seeMonthlyPlan")}</Link>
           </Button>
           <Button asChild variant="secondary" size="lg">
-            <Link href="/dashboard">Return to dashboard</Link>
+            <Link href="/dashboard">{t("billing.returnToDashboard")}</Link>
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Clear pricing, no surprise charges, and you can cancel anytime.
+          {t("billing.clearPricing")}
         </p>
       </CardContent>
     </Card>

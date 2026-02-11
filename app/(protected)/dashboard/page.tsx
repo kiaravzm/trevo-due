@@ -2,8 +2,10 @@ import Link from "next/link";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { MetricCard } from "./metric-card";
+import { NextDueDatesCard } from "./next-due-dates-card";
 
 type InvoiceSummary = {
   id: string;
@@ -13,6 +15,8 @@ type InvoiceSummary = {
   currency: string;
   due_date: string | null;
   created_at: string;
+  customer_id: string | null;
+  reminders_enabled: boolean;
 };
 
 function formatCurrency(amountCents: number, currency: string) {
@@ -25,17 +29,17 @@ function formatCurrency(amountCents: number, currency: string) {
   return formatter.format(amountCents / 100);
 }
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(
-    new Date(value)
-  );
-}
-
 export default async function DashboardPage() {
   const supabase = createSupabaseServerClient();
   const { data: invoices } = await supabase
     .from("invoices")
-    .select("id, number, status, amount_cents, currency, due_date, created_at")
+    .select(
+      "id, number, status, amount_cents, currency, due_date, created_at, customer_id, reminders_enabled"
+    )
+    .order("created_at", { ascending: false });
+  const { data: customers } = await supabase
+    .from("customers")
+    .select("id, name")
     .order("created_at", { ascending: false });
 
   const invoiceList: InvoiceSummary[] = invoices ?? [];
@@ -83,100 +87,73 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-background">
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-foreground">Sales dashboard</h1>
+          <h1 className="text-3xl font-semibold text-foreground">{t("dashboard.salesDashboard")}</h1>
           <p className="text-sm text-muted-foreground">
-            See revenue and billing health at a glance.
+            {t("dashboard.salesDashboardDescription")}
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <MetricCard
-            title="Total invoiced (current month)"
+            title={t("dashboard.totalInvoiced")}
             value={formatCurrency(totalInvoicedCents, currency)}
-            description="Issued this month"
+            description={t("dashboard.issuedThisMonth")}
           />
           <MetricCard
-            title="Total paid"
+            title={t("dashboard.totalPaid")}
             value={formatCurrency(totalPaidCents, currency)}
-            description="Status"
-            statusLabel="Paid"
+            description={t("common.status")}
+            statusLabel={t("invoice.status.paid")}
             statusTone="success"
           />
           <MetricCard
-            title="Total overdue"
+            title={t("dashboard.totalOverdue")}
             value={formatCurrency(totalOverdueCents, currency)}
-            description="Status"
-            statusLabel="Overdue"
+            description={t("common.status")}
+            statusLabel={t("invoice.status.overdue")}
             statusTone="danger"
           />
           <MetricCard
-            title="Invoices pending"
+            title={t("dashboard.invoicesPending")}
             value={`${pendingCount}`}
-            description="Status"
-            statusLabel="Open"
+            description={t("common.status")}
+            statusLabel={t("invoice.status.open")}
             statusTone="warning"
           />
           <MetricCard
-            title="Upcoming due dates"
+            title={t("dashboard.upcomingDueDates")}
             value={`${upcomingInvoices.length}`}
-            description="Next 30 days"
+            description={t("dashboard.next30Days")}
           />
         </div>
 
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle>Next due dates</CardTitle>
-            <CardDescription>Upcoming invoices that need attention.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {upcomingInvoices.length > 0 ? (
-              <div className="space-y-3">
-                {upcomingInvoices.map((invoice) => (
-                  <div
-                    key={invoice.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-4 py-3 text-sm"
-                  >
-                    <div className="space-y-1">
-                      <p className="font-medium text-foreground">Invoice {invoice.number}</p>
-                      {invoice.due_date ? (
-                        <p className="text-xs text-muted-foreground">
-                          Due {formatDate(invoice.due_date)}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div className="text-sm font-medium text-foreground">
-                      {formatCurrency(invoice.amount_cents, invoice.currency || currency)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">No upcoming invoices.</p>
-            )}
-          </CardContent>
-        </Card>
+        <NextDueDatesCard
+          invoices={upcomingInvoices}
+          customers={customers ?? []}
+          currency={currency}
+        />
 
         <Card className="shadow-soft">
           <CardHeader>
-            <CardTitle>Quick actions</CardTitle>
-            <CardDescription>Jump into the areas where work gets done.</CardDescription>
+            <CardTitle>{t("dashboard.quickActions")}</CardTitle>
+            <CardDescription>{t("dashboard.quickActionsDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
               <Button asChild>
-                <Link href="/dashboard/clients">Manage clients</Link>
+                <Link href="/dashboard/clients">{t("dashboard.manageClients")}</Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href="/dashboard/contracts">Manage contracts</Link>
+                <Link href="/dashboard/contracts">{t("dashboard.manageContracts")}</Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/dashboard/invoices">Manage invoices</Link>
+                <Link href="/dashboard/invoices">{t("dashboard.manageInvoices")}</Link>
               </Button>
               <Button asChild variant="ghost">
-                <Link href="/dashboard/billing">Billing</Link>
+                <Link href="/dashboard/billing">{t("nav.billing")}</Link>
               </Button>
               <Button asChild variant="ghost">
-                <Link href="/dashboard/settings">Settings</Link>
+                <Link href="/dashboard/settings">{t("nav.settings")}</Link>
               </Button>
             </div>
           </CardContent>

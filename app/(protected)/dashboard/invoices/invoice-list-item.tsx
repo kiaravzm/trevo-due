@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { StatusBadge } from "@/components/ui/badge";
+import { invoiceStatusLabel, t } from "@/lib/i18n";
 import { InvoiceDetailOverlay } from "./invoice-detail-overlay";
 
 type Invoice = {
@@ -22,12 +24,6 @@ type Customer = { id: string; name: string };
 type InvoiceListItemProps = {
   invoice: Invoice;
   customers: Customer[];
-};
-
-const statusLabels: Record<string, string> = {
-  open: "Open",
-  paid: "Paid",
-  overdue: "Overdue",
 };
 
 function formatAmount(amountCents: number) {
@@ -57,8 +53,11 @@ export function InvoiceListItem({ invoice, customers }: InvoiceListItemProps) {
           <span className="truncate font-medium text-foreground">
             {invoice.number}
           </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {statusLabels[invoice.status] ?? invoice.status}
+          <span className="truncate">
+            <StatusBadge
+              status={invoice.status as "paid" | "open" | "overdue"}
+              label={invoiceStatusLabel(invoice.status)}
+            />
           </span>
           <span className="truncate text-sm text-muted-foreground">
             {invoice.currency} {formatAmount(invoice.amount_cents)}
@@ -78,7 +77,7 @@ export function InvoiceListItem({ invoice, customers }: InvoiceListItemProps) {
             e.stopPropagation();
             setOverlayOpen(true);
           }}
-          aria-label="View or edit invoice"
+          aria-label={t("invoice.viewOrEditInvoice")}
         >
           <Pencil className="h-4 w-4" />
         </Button>
