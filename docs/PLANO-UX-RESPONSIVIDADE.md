@@ -1,4 +1,4 @@
-# Plano de melhorias de UX e responsividade — AgencyDocs
+# Plano de melhorias de UX e responsividade — TrevoDue
 
 Este documento consolida o checklist de UX solicitado, a análise do projeto e as sugestões adicionais para implementação.
 

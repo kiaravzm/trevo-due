@@ -9,7 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { UserSummary } from "../user-summary";
 
 export const metadata: Metadata = {
-  title: "Settings | AgencyDocs",
+  title: "Settings | TrevoDue",
   description: "Manage your billing and account information.",
 };
 

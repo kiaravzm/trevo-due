@@ -354,7 +354,7 @@ export async function sendInvoiceReminderAction(
       invoiceNumber: invoice.number,
       amount,
       dueDate: invoice.due_date,
-      senderName: "AgencyDocs",
+      senderName: "TrevoDue",
     },
     (key, params) => t(key, params as Record<string, string | number>)
   );

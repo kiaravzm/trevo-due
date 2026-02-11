@@ -171,7 +171,7 @@ export const en = {
     subscriptionStarted: "Subscription started. Your access is ready.",
     checkoutCanceled: "Checkout canceled. You can resume anytime.",
     somethingWentWrong: "Something went wrong. Please try again.",
-    agencyDocsMonthly: "AgencyDocs Monthly",
+    agencyDocsMonthly: "TrevoDue Monthly",
     trialEndsOn: "Trial ends on {date}",
     startTrial: "Start a trial to explore every feature before billing.",
     unlimitedClientsContractsInvoices: "Unlimited clients, contracts, and invoices",
@@ -246,7 +246,7 @@ export const en = {
 
   // Login
   login: {
-    title: "Sign in to AgencyDocs",
+    title: "Sign in to TrevoDue",
     description: "A secure, passwordless experience designed for teams that value trust and clarity.",
     workEmail: "Work email",
     emailPlaceholder: "you@agency.com",

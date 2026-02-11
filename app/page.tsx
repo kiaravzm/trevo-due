@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FileSignature, FileText, LayoutDashboard } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "TrevoDue — Simple contract and invoice tracking",
@@ -17,7 +24,7 @@ export default function Home() {
       <main className="min-h-[calc(100vh-3.5rem)] bg-background">
         {/* Hero */}
         <section
-          className="container flex flex-col items-center justify-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24"
+          className="landing-gradient-hero relative container flex flex-col items-center justify-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24"
           aria-labelledby="hero-heading"
         >
           <h1
@@ -93,7 +100,7 @@ export default function Home() {
 
         {/* Como funciona */}
         <section
-          className="border-t border-border bg-muted/30 py-16 md:py-24"
+          className="border-t border-border bg-primary-soft/50 py-16 md:py-24"
           aria-labelledby="how-heading"
         >
           <div className="container px-4 sm:px-6">
@@ -103,25 +110,40 @@ export default function Home() {
             >
               How it works
             </h2>
-            <div className="mt-8 grid gap-8 sm:grid-cols-3">
-              <div className="flex flex-col gap-2">
-                <span className="font-logo text-lg font-semibold text-foreground">1.</span>
-                <p className="text-base text-muted-foreground">
-                  Add a contract or upload a signed agreement
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="font-logo text-lg font-semibold text-foreground">2.</span>
-                <p className="text-base text-muted-foreground">
-                  Create an invoice in minutes
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="font-logo text-lg font-semibold text-foreground">3.</span>
-                <p className="text-base text-muted-foreground">
-                  See payment status at a glance
-                </p>
-              </div>
+            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+              <Card className="border-border/80 bg-card/95 shadow-sm transition-shadow hover:shadow-md">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <FileSignature className="h-6 w-6" aria-hidden />
+                  </div>
+                  <CardTitle className="text-base">1. Add a contract</CardTitle>
+                  <CardDescription>
+                    Add a contract or upload a signed agreement
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card className="border-border/80 bg-card/95 shadow-sm transition-shadow hover:shadow-md">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <FileText className="h-6 w-6" aria-hidden />
+                  </div>
+                  <CardTitle className="text-base">2. Create an invoice</CardTitle>
+                  <CardDescription>
+                    Create an invoice in minutes
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <Card className="border-border/80 bg-card/95 shadow-sm transition-shadow hover:shadow-md">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <LayoutDashboard className="h-6 w-6" aria-hidden />
+                  </div>
+                  <CardTitle className="text-base">3. See status at a glance</CardTitle>
+                  <CardDescription>
+                    See payment status at a glance
+                  </CardDescription>
+                </CardHeader>
+              </Card>
             </div>
             <p className="mt-8 text-base font-medium text-foreground">That&apos;s it.</p>
           </div>
@@ -191,7 +213,7 @@ export default function Home() {
 
         {/* CTA Final */}
         <section
-          className="border-t border-border bg-muted/30 py-16 md:py-24"
+          className="landing-gradient-cta border-t border-border py-16 md:py-24"
           aria-labelledby="cta-heading"
         >
           <div className="container flex flex-col items-center gap-6 px-4 text-center sm:px-6">

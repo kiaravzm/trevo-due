@@ -1,7 +1,7 @@
-# AgencyDocs (working title)
+# TrevoDue
 
 ## What is this?
-AgencyDocs is a lightweight tool to create professional **proposals and invoices** in PDF format for small service-based agencies.
+TrevoDue is a lightweight tool to create professional **proposals and invoices** in PDF format for small service-based agencies.
 
 It focuses on speed, clarity, and professional presentation — without the complexity of full accounting or ERP systems.
 

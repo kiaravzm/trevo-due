@@ -1,4 +1,4 @@
--- AgencyDocs schema: proposals + invoices with RLS
+-- TrevoDue schema: proposals + invoices with RLS
 
 create extension if not exists "pgcrypto";
 

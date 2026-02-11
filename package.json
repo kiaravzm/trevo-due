@@ -1,7 +1,7 @@
 {
-  "name": "agency-docs",
+  "name": "trevo-due",
   "version": "1.0.0",
-  "description": "## What is this? AgencyDocs is a lightweight tool to create professional **proposals and invoices** in PDF format for small service-based agencies.",
+  "description": "## What is this? TrevoDue is a lightweight tool to create professional **proposals and invoices** in PDF format for small service-based agencies.",
   "private": true,
   "scripts": {
     "dev": "next dev",

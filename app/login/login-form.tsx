@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -52,7 +53,17 @@ export function LoginForm() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md shadow-soft">
-        <CardHeader>
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 flex justify-center">
+            <Image
+              src="/icon.png"
+              alt="TrevoDue"
+              width={40}
+              height={40}
+              priority
+              className="h-10 w-10"
+            />
+          </div>
           <CardTitle>{t("login.title")}</CardTitle>
           <CardDescription>
             {t("login.description")}
