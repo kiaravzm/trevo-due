@@ -59,11 +59,7 @@ function getSortOptionLabel(value: string): string {
   return `${field} (${dir})`;
 }
 
-export function InvoicesCard({
-  invoices,
-  customers,
-  limitReached,
-}: InvoicesCardProps) {
+export function InvoicesCard({ invoices, customers, limitReached }: InvoicesCardProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [periodStart, setPeriodStart] = useState("");
   const [periodEnd, setPeriodEnd] = useState("");
@@ -146,10 +142,7 @@ export function InvoicesCard({
             <CardTitle>{t("invoice.savedInvoices")}</CardTitle>
             <CardDescription>{t("invoice.savedDescription")}</CardDescription>
           </div>
-          <Button
-            onClick={() => setCreateOpen(true)}
-            disabled={limitReached}
-          >
+          <Button onClick={() => setCreateOpen(true)} disabled={limitReached}>
             {t("invoice.createInvoice")}
           </Button>
         </CardHeader>
@@ -245,11 +238,7 @@ export function InvoicesCard({
                 <span className="w-10" aria-hidden />
               </div>
               {filteredAndSortedInvoices.map((invoice) => (
-                <InvoiceListItem
-                  key={invoice.id}
-                  invoice={invoice}
-                  customers={customers}
-                />
+                <InvoiceListItem key={invoice.id} invoice={invoice} customers={customers} />
               ))}
             </>
           ) : invoices && invoices.length > 0 ? (
@@ -270,9 +259,7 @@ export function InvoicesCard({
               description={t("invoice.pageDescription")}
               action={
                 !limitReached && (
-                  <Button onClick={() => setCreateOpen(true)}>
-                    {t("invoice.createInvoice")}
-                  </Button>
+                  <Button onClick={() => setCreateOpen(true)}>{t("invoice.createInvoice")}</Button>
                 )
               }
             />

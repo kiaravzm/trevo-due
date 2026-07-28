@@ -44,11 +44,7 @@ function SaveButton() {
   );
 }
 
-export function ClientDetailOverlay({
-  client,
-  open,
-  onOpenChange,
-}: ClientDetailOverlayProps) {
+export function ClientDetailOverlay({ client, open, onOpenChange }: ClientDetailOverlayProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [state, formAction] = useFormState(updateClientAction, initialState);
@@ -86,17 +82,9 @@ export function ClientDetailOverlay({
 
   return (
     <>
-      <DetailOverlay
-        open={open}
-        onOpenChange={onOpenChange}
-        title={client.name}
-        footer={footer}
-      >
+      <DetailOverlay open={open} onOpenChange={onOpenChange} title={client.name} footer={footer}>
         {isEditing ? (
-          <form
-            action={formAction}
-            className="flex flex-col gap-4"
-          >
+          <form action={formAction} className="flex flex-col gap-4">
             <input type="hidden" name="id" value={client.id} />
             <div className="space-y-4">
               <div className="space-y-2">
@@ -164,10 +152,7 @@ export function ClientDetailOverlay({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <Button
-              variant="destructive"
-              onClick={() => handleDelete()}
-            >
+            <Button variant="destructive" onClick={() => handleDelete()}>
               {t("common.delete")}
             </Button>
           </AlertDialogFooter>

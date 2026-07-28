@@ -45,12 +45,7 @@ export function InvoiceCreateForm({ customers, onSuccess, onCancel }: InvoiceCre
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="invoice-number">{t("invoice.invoiceNumber")}</Label>
-          <Input
-            id="invoice-number"
-            name="number"
-            required
-            placeholder="INV-2024-001"
-          />
+          <Input id="invoice-number" name="number" required placeholder="INV-2024-001" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="invoice-status">{t("common.status")}</Label>
@@ -76,21 +71,11 @@ export function InvoiceCreateForm({ customers, onSuccess, onCancel }: InvoiceCre
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="invoice-amount">{t("common.amount")}</Label>
-          <Input
-            id="invoice-amount"
-            name="amount"
-            required
-            placeholder="1250.00"
-          />
+          <Input id="invoice-amount" name="amount" required placeholder="1250.00" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="invoice-currency">{t("common.currency")}</Label>
-          <Input
-            id="invoice-currency"
-            name="currency"
-            defaultValue="USD"
-            placeholder="USD"
-          />
+          <Input id="invoice-currency" name="currency" defaultValue="USD" placeholder="USD" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="invoice-due">{t("common.dueDateOptional")}</Label>

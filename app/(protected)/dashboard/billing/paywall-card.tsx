@@ -17,9 +17,7 @@ export function PaywallCard({ title, description }: PaywallCardProps) {
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          {t("billing.paywallNote")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("billing.paywallNote")}</p>
         <div className="flex flex-wrap gap-3">
           <Button asChild size="lg">
             <Link href="/dashboard/billing">{t("billing.seeMonthlyPlan")}</Link>
@@ -28,9 +26,7 @@ export function PaywallCard({ title, description }: PaywallCardProps) {
             <Link href="/dashboard">{t("billing.returnToDashboard")}</Link>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          {t("billing.clearPricing")}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("billing.clearPricing")}</p>
       </CardContent>
     </Card>
   );

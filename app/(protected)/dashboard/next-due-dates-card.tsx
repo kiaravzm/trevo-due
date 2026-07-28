@@ -40,11 +40,7 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export function NextDueDatesCard({
-  invoices,
-  customers,
-  currency,
-}: NextDueDatesCardProps) {
+export function NextDueDatesCard({ invoices, customers, currency }: NextDueDatesCardProps) {
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
   const selectedInvoice = invoices.find((inv) => inv.id === selectedInvoiceId);
 
@@ -53,17 +49,14 @@ export function NextDueDatesCard({
       <Card className="shadow-soft">
         <CardHeader>
           <CardTitle>{t("dashboard.nextDueDates")}</CardTitle>
-          <CardDescription>
-            {t("dashboard.nextDueDatesDescription")}
-          </CardDescription>
+          <CardDescription>{t("dashboard.nextDueDatesDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {invoices.length > 0 ? (
             <div className="space-y-3">
               {invoices.map((invoice) => {
                 const customerName =
-                  customers.find((c) => c.id === invoice.customer_id)?.name ??
-                  null;
+                  customers.find((c) => c.id === invoice.customer_id)?.name ?? null;
                 return (
                   <div
                     key={invoice.id}
@@ -94,19 +87,14 @@ export function NextDueDatesCard({
                       ) : null}
                     </div>
                     <div className="text-sm font-medium text-foreground">
-                      {formatCurrency(
-                        invoice.amount_cents,
-                        invoice.currency || currency
-                      )}
+                      {formatCurrency(invoice.amount_cents, invoice.currency || currency)}
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              {t("dashboard.noUpcomingInvoices")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("dashboard.noUpcomingInvoices")}</p>
           )}
         </CardContent>
       </Card>

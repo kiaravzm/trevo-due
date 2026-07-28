@@ -15,16 +15,16 @@ Design system e diretrizes para o TrevoDue — SaaS de controle de contratos e f
 
 ### Paleta: Modern Soft Mint
 
-| Uso            | Token        | Valor    | Notas                         |
-|----------------|--------------|----------|-------------------------------|
-| Primária       | `--primary`  | #2CB67D  | Ações principais, links       |
-| Primária suave | `--primary-soft` | #EAF7F1 | Fundos discretos, navegação ativa |
-| Acento         | `--accent`   | #7F5AF0  | Uso mínimo                    |
-| Sucesso        | `--success`  | #2CB67D  | Pago, assinado                |
-| Atenção        | `--warning`  | #FBBF24  | Pendente                      |
-| Erro           | `--error`    | #EF4444  | Atrasado                      |
-| Texto principal| `--foreground` | #0F172A | Conteúdo                      |
-| Fundo          | `--background` | #FFFFFF | Página                        |
+| Uso             | Token            | Valor   | Notas                             |
+| --------------- | ---------------- | ------- | --------------------------------- |
+| Primária        | `--primary`      | #2CB67D | Ações principais, links           |
+| Primária suave  | `--primary-soft` | #EAF7F1 | Fundos discretos, navegação ativa |
+| Acento          | `--accent`       | #7F5AF0 | Uso mínimo                        |
+| Sucesso         | `--success`      | #2CB67D | Pago, assinado                    |
+| Atenção         | `--warning`      | #FBBF24 | Pendente                          |
+| Erro            | `--error`        | #EF4444 | Atrasado                          |
+| Texto principal | `--foreground`   | #0F172A | Conteúdo                          |
+| Fundo           | `--background`   | #FFFFFF | Página                            |
 
 ### Tipografia
 
@@ -42,6 +42,7 @@ Moderno, calmo, profissional, amigável, não chamativo.
 ### Cores (globals.css)
 
 Variáveis CSS em `:root` e `.dark` cobrem:
+
 - Cores principais e semânticas
 - Neutras (muted, border, input)
 - Ring (foco para acessibilidade)

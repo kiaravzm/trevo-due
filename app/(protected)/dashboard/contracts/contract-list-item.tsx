@@ -25,8 +25,7 @@ type ContractListItemProps = {
 
 export function ContractListItem({ contract, customers }: ContractListItemProps) {
   const [overlayOpen, setOverlayOpen] = useState(false);
-  const customerName =
-    customers.find((c) => c.id === contract.customer_id)?.name ?? "—";
+  const customerName = customers.find((c) => c.id === contract.customer_id)?.name ?? "—";
 
   return (
     <>
@@ -43,9 +42,7 @@ export function ContractListItem({ contract, customers }: ContractListItemProps)
         className="flex min-h-[44px] cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <div className="grid min-w-0 flex-1 gap-1 md:grid-cols-[1.5fr,1fr,1fr]">
-          <span className="truncate font-medium text-foreground">
-            {contract.title}
-          </span>
+          <span className="truncate font-medium text-foreground">{contract.title}</span>
           <span className="truncate">
             <StatusBadge
               status={
@@ -58,9 +55,7 @@ export function ContractListItem({ contract, customers }: ContractListItemProps)
               label={contractStatusLabel(contract.status)}
             />
           </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {customerName}
-          </span>
+          <span className="truncate text-sm text-muted-foreground">{customerName}</span>
         </div>
         <Button
           variant="ghost"

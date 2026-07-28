@@ -25,11 +25,7 @@ export function InvoiceCreateOverlay({
   };
 
   return (
-    <DetailOverlay
-      open={open}
-      onOpenChange={onOpenChange}
-      title={t("invoice.createInvoice")}
-    >
+    <DetailOverlay open={open} onOpenChange={onOpenChange} title={t("invoice.createInvoice")}>
       <InvoiceCreateForm
         customers={customers}
         onSuccess={handleSuccess}

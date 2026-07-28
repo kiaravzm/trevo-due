@@ -20,11 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { contractStatusLabel, t } from "@/lib/i18n";
-import {
-  deleteContractAction,
-  getContractSignedUrlAction,
-  updateContractAction,
-} from "../actions";
+import { deleteContractAction, getContractSignedUrlAction, updateContractAction } from "../actions";
 
 type Contract = {
   id: string;
@@ -65,8 +61,7 @@ export function ContractDetailOverlay({
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [state, formAction] = useFormState(updateContractAction, initialState);
 
-  const customerName =
-    customers.find((c) => c.id === contract.customer_id)?.name ?? null;
+  const customerName = customers.find((c) => c.id === contract.customer_id)?.name ?? null;
 
   useEffect(() => {
     if (open && contract.file_path) {
@@ -116,12 +111,7 @@ export function ContractDetailOverlay({
 
   return (
     <>
-      <DetailOverlay
-        open={open}
-        onOpenChange={onOpenChange}
-        title={contract.title}
-        footer={footer}
-      >
+      <DetailOverlay open={open} onOpenChange={onOpenChange} title={contract.title} footer={footer}>
         {isEditing ? (
           <form action={formAction} className="flex flex-col gap-4">
             <input type="hidden" name="id" value={contract.id} />
@@ -138,11 +128,7 @@ export function ContractDetailOverlay({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-contract-status">{t("common.status")}</Label>
-                <Select
-                  id="edit-contract-status"
-                  name="status"
-                  defaultValue={contract.status}
-                >
+                <Select id="edit-contract-status" name="status" defaultValue={contract.status}>
                   <option value="signed">{t("contract.status.signed")}</option>
                   <option value="draft">{t("contract.status.draft")}</option>
                   <option value="pending">{t("contract.status.pending")}</option>
@@ -165,11 +151,7 @@ export function ContractDetailOverlay({
               </div>
             </div>
             <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setIsEditing(false)}
-              >
+              <Button variant="outline" type="button" onClick={() => setIsEditing(false)}>
                 {t("common.cancel")}
               </Button>
               <SaveButton />
@@ -178,14 +160,14 @@ export function ContractDetailOverlay({
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">{t("contract.titleLabel")}</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                {t("contract.titleLabel")}
+              </p>
               <p className="text-foreground">{contract.title}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">{t("common.status")}</p>
-              <p className="text-foreground capitalize">
-                {contractStatusLabel(contract.status)}
-              </p>
+              <p className="text-foreground capitalize">{contractStatusLabel(contract.status)}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">{t("common.client")}</p>
@@ -205,9 +187,7 @@ export function ContractDetailOverlay({
                   <ExternalLink className="h-3 w-3" />
                 </a>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  {t("contract.loadingLink")}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("contract.loadingLink")}</p>
               )}
             </div>
           </div>

@@ -19,11 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { invoiceStatusLabel, t } from "@/lib/i18n";
-import {
-  deleteInvoiceAction,
-  sendInvoiceReminderAction,
-  updateInvoiceAction,
-} from "../actions";
+import { deleteInvoiceAction, sendInvoiceReminderAction, updateInvoiceAction } from "../actions";
 
 type Invoice = {
   id: string;
@@ -84,11 +80,10 @@ export function InvoiceDetailOverlay({
   const [state, formAction] = useFormState(updateInvoiceAction, initialState);
   const [reminderState, reminderFormAction] = useFormState(
     sendInvoiceReminderAction,
-    reminderInitialState
+    reminderInitialState,
   );
 
-  const customerName =
-    customers.find((c) => c.id === invoice.customer_id)?.name ?? null;
+  const customerName = customers.find((c) => c.id === invoice.customer_id)?.name ?? null;
 
   useEffect(() => {
     if (state.status === "success" && state.message) {
@@ -153,11 +148,7 @@ export function InvoiceDetailOverlay({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-invoice-status">{t("common.status")}</Label>
-                <Select
-                  id="edit-invoice-status"
-                  name="status"
-                  defaultValue={invoice.status}
-                >
+                <Select id="edit-invoice-status" name="status" defaultValue={invoice.status}>
                   <option value="open">{t("invoice.status.open")}</option>
                   <option value="paid">{t("invoice.status.paid")}</option>
                   <option value="overdue">{t("invoice.status.overdue")}</option>
@@ -219,11 +210,7 @@ export function InvoiceDetailOverlay({
               </label>
             </div>
             <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setIsEditing(false)}
-              >
+              <Button variant="outline" type="button" onClick={() => setIsEditing(false)}>
                 {t("common.cancel")}
               </Button>
               <SaveButton />
@@ -239,9 +226,7 @@ export function InvoiceDetailOverlay({
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">{t("common.status")}</p>
-              <p className="text-foreground capitalize">
-                {invoiceStatusLabel(invoice.status)}
-              </p>
+              <p className="text-foreground capitalize">{invoiceStatusLabel(invoice.status)}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">{t("common.amount")}</p>
@@ -250,9 +235,7 @@ export function InvoiceDetailOverlay({
               </p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                {t("common.dueDate")}
-              </p>
+              <p className="text-sm font-medium text-muted-foreground">{t("common.dueDate")}</p>
               <p className="text-foreground">{invoice.due_date ?? "—"}</p>
             </div>
             <div className="space-y-2">

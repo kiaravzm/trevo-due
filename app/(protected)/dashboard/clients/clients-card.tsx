@@ -61,9 +61,7 @@ export function ClientsCard({ clients }: ClientsCardProps) {
               title={t("client.noClientsYet")}
               description={t("client.savedClientsDescription")}
               action={
-                <Button onClick={() => setCreateOpen(true)}>
-                  {t("client.addFirstClient")}
-                </Button>
+                <Button onClick={() => setCreateOpen(true)}>{t("client.addFirstClient")}</Button>
               }
             />
           )}

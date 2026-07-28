@@ -55,10 +55,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         >
           <Menu className="h-5 w-5" />
         </Button>
-        <Link
-          href="/dashboard"
-          aria-label="TrevoDue - Ir para o dashboard"
-        >
+        <Link href="/dashboard" aria-label="TrevoDue - Ir para o dashboard">
           <Image
             src={logo2x}
             alt="TrevoDue"

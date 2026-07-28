@@ -51,7 +51,8 @@ export const en = {
     enableReminders: "Enable polite email reminders",
     emailReminders: "Email reminders",
     deleteTitle: "Delete invoice?",
-    deleteDescription: "This will permanently remove invoice {number}. This action cannot be undone.",
+    deleteDescription:
+      "This will permanently remove invoice {number}. This action cannot be undone.",
     sendReminder: "Send reminder",
     status: {
       open: "Pending",
@@ -84,14 +85,18 @@ export const en = {
     savedContracts: "Saved contracts",
     noContractsYet: "No contracts yet. Upload your first PDF above.",
     contractLimitReachedTitle: "You've reached the free contract limit",
-    contractLimitReachedDescription: "Upgrade to upload more contracts and keep agreements in one place.",
-    uploadSignedDescription: "Upload signed agreements securely and keep them tied to the right client.",
+    contractLimitReachedDescription:
+      "Upgrade to upload more contracts and keep agreements in one place.",
+    uploadSignedDescription:
+      "Upload signed agreements securely and keep them tied to the right client.",
     viewOrEditContract: "View or edit contract",
     pdfFile: "PDF file",
     deleteTitle: "Delete contract?",
-    deleteDescription: "This will permanently remove \"{title}\" and its PDF file. This action cannot be undone.",
+    deleteDescription:
+      'This will permanently remove "{title}" and its PDF file. This action cannot be undone.',
     uploadSignedTitle: "Upload a signed contract",
-    uploadSignedStorageNote: "Files are stored in a private bucket and only visible to the account owner.",
+    uploadSignedStorageNote:
+      "Files are stored in a private bucket and only visible to the account owner.",
     uploadPdf: "Upload PDF",
     uploading: "Uploading...",
     uploadedSecurely: "Contract uploaded securely.",
@@ -161,7 +166,8 @@ export const en = {
     companyNamePlaceholder: "Company name",
     editEmailPlaceholder: "john.doe@example.com",
     deleteTitle: "Delete client?",
-    deleteDescription: "This will permanently remove {name} from your records. This action cannot be undone.",
+    deleteDescription:
+      "This will permanently remove {name} from your records. This action cannot be undone.",
   },
 
   // Billing
@@ -182,7 +188,8 @@ export const en = {
     redirecting: "Redirecting...",
     seeMonthlyPlan: "See monthly plan",
     returnToDashboard: "Return to dashboard",
-    paywallNote: "You can keep using clients for free. Upgrade only when you need contract storage or invoice tracking.",
+    paywallNote:
+      "You can keep using clients for free. Upgrade only when you need contract storage or invoice tracking.",
     clearPricing: "Clear pricing, no surprise charges, and you can cancel anytime.",
   },
 
@@ -247,14 +254,16 @@ export const en = {
   // Login
   login: {
     title: "Sign in to TrevoDue",
-    description: "A secure, passwordless experience designed for professionals that value trust and clarity.",
+    description:
+      "A secure, passwordless experience designed for professionals that value trust and clarity.",
     workEmail: "Work email",
     emailPlaceholder: "john.doe@example.com",
     sendMagicLink: "Send magic link",
     sendingMagicLink: "Sending magic link...",
     checkInbox: "Check your inbox for a secure magic link to finish signing in.",
     unableToSendMagicLink: "Unable to send the magic link.",
-    privacyNote: "We never share your email. The link expires quickly and keeps your access secure.",
+    privacyNote:
+      "We never share your email. The link expires quickly and keeps your access secure.",
   },
 
   // Email (invoice reminder)
@@ -263,8 +272,10 @@ export const en = {
     reminderDueDate: "Due date: {date}",
     reminderDueDateNotSpecified: "Due date: not specified",
     reminderHi: "Hi {name},",
-    reminderBodyIntro: "I hope you are doing well. This is a gentle reminder about invoice {number} for {amount}.",
-    reminderBodyOutro: "If you have any questions or need another copy, just let me know. Thank you for your partnership.",
+    reminderBodyIntro:
+      "I hope you are doing well. This is a gentle reminder about invoice {number} for {amount}.",
+    reminderBodyOutro:
+      "If you have any questions or need another copy, just let me know. Thank you for your partnership.",
     reminderBestRegards: "Best regards",
   },
 } as const;

@@ -12,7 +12,7 @@ export const FREE_PLAN_LIMIT = 3;
  */
 export function hasReachedFreeLimit(
   subscriptionStatus: SubscriptionStatus,
-  currentCount: number
+  currentCount: number,
 ): boolean {
   if (subscriptionStatus === "active" || subscriptionStatus === "trialing") {
     return false;

@@ -21,7 +21,7 @@ const manrope = Manrope({
 const baseUrl =
   process.env.VERCEL_URL != null
     ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -33,11 +33,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
@@ -45,7 +41,7 @@ export default function RootLayout({
           inter.className,
           "min-h-screen bg-background antialiased",
           inter.variable,
-          manrope.variable
+          manrope.variable,
         )}
       >
         <Providers>{children}</Providers>

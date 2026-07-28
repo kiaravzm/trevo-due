@@ -10,7 +10,7 @@ type TranslateFn = (key: string, params?: Record<string, string>) => string;
 
 export function buildInvoiceReminderEmail(
   payload: InvoiceReminderPayload,
-  getMessage: TranslateFn
+  getMessage: TranslateFn,
 ) {
   const { clientName, invoiceNumber, amount, dueDate, senderName } = payload;
   const dueLine = dueDate

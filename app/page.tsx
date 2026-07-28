@@ -4,12 +4,7 @@ import { FileSignature, FileText, LayoutDashboard } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "TrevoDue — Simple contract and invoice tracking",
@@ -117,9 +112,7 @@ export default function Home() {
                     <FileSignature className="h-6 w-6" aria-hidden />
                   </div>
                   <CardTitle className="text-base">1. Add a contract</CardTitle>
-                  <CardDescription>
-                    Add a contract or upload a signed agreement
-                  </CardDescription>
+                  <CardDescription>Add a contract or upload a signed agreement</CardDescription>
                 </CardHeader>
               </Card>
               <Card className="border-border/80 bg-card/95 shadow-sm transition-shadow hover:shadow-md">
@@ -128,9 +121,7 @@ export default function Home() {
                     <FileText className="h-6 w-6" aria-hidden />
                   </div>
                   <CardTitle className="text-base">2. Create an invoice</CardTitle>
-                  <CardDescription>
-                    Create an invoice in minutes
-                  </CardDescription>
+                  <CardDescription>Create an invoice in minutes</CardDescription>
                 </CardHeader>
               </Card>
               <Card className="border-border/80 bg-card/95 shadow-sm transition-shadow hover:shadow-md">
@@ -139,9 +130,7 @@ export default function Home() {
                     <LayoutDashboard className="h-6 w-6" aria-hidden />
                   </div>
                   <CardTitle className="text-base">3. See status at a glance</CardTitle>
-                  <CardDescription>
-                    See payment status at a glance
-                  </CardDescription>
+                  <CardDescription>See payment status at a glance</CardDescription>
                 </CardHeader>
               </Card>
             </div>
@@ -236,7 +225,10 @@ export default function Home() {
               Contract and invoice tracking for people who want clarity — not accounting software.
             </blockquote>
             <p className="mt-6 text-center text-xs text-muted-foreground">
-              © TrevoDue · <Link href="/login" className="underline hover:text-foreground">Sign in</Link>
+              © TrevoDue ·{" "}
+              <Link href="/login" className="underline hover:text-foreground">
+                Sign in
+              </Link>
             </p>
           </div>
         </footer>

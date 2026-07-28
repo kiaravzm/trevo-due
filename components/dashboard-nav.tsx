@@ -29,9 +29,7 @@ export function DashboardNav() {
     <nav className="flex flex-col gap-1">
       {navItems.map(({ href, labelKey, icon: Icon }) => {
         const isActive =
-          href === "/dashboard"
-            ? pathname === "/dashboard"
-            : pathname.startsWith(href);
+          href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
         return (
           <Link
             key={href}
@@ -40,7 +38,7 @@ export function DashboardNav() {
               "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               isActive
                 ? "bg-primary-soft text-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />

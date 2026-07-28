@@ -4,15 +4,15 @@ Use this checklist in PRs and when adding new UI strings. All user-facing copy s
 
 ## Required terms (use these only)
 
-| Term    | Use everywhere for        |
-|---------|---------------------------|
-| Contract | Contract documents       |
-| Invoice | Invoices / billing documents |
-| Paid   | Invoice status: paid      |
-| Pending | Invoice/contract status: not yet paid / in progress |
-| Overdue | Invoice status: past due  |
-| Due date | Date when payment is due |
-| Client | Customer / contact (never "Customer" in UI) |
+| Term     | Use everywhere for                                  |
+| -------- | --------------------------------------------------- |
+| Contract | Contract documents                                  |
+| Invoice  | Invoices / billing documents                        |
+| Paid     | Invoice status: paid                                |
+| Pending  | Invoice/contract status: not yet paid / in progress |
+| Overdue  | Invoice status: past due                            |
+| Due date | Date when payment is due                            |
+| Client   | Customer / contact (never "Customer" in UI)         |
 
 ## Forbidden terms (do not show to the user)
 

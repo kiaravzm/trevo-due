@@ -93,7 +93,7 @@ export async function POST(request: Request) {
       current_period_end: payload.currentPeriodEnd,
       trial_ends_at: payload.trialEndsAt,
     },
-    { onConflict: "user_id" }
+    { onConflict: "user_id" },
   );
 
   return NextResponse.json({ received: true });

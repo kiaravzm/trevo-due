@@ -45,9 +45,7 @@ export function Breadcrumbs() {
     <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1 text-sm">
       {items.map((item, i) => (
         <span key={item.href ?? item.label} className="flex items-center gap-1">
-          {i > 0 && (
-            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
-          )}
+          {i > 0 && <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />}
           {item.href ? (
             <Link
               href={item.href}

@@ -4,18 +4,8 @@ import * as React from "react";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/lib/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 
@@ -52,10 +42,7 @@ export function DetailOverlay({
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="bottom"
-          className="flex max-h-[85vh] flex-col rounded-t-xl"
-        >
+        <SheetContent side="bottom" className="flex max-h-[85vh] flex-col rounded-t-xl">
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
           </SheetHeader>
@@ -67,9 +54,7 @@ export function DetailOverlay({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={cn("flex max-h-[90vh] flex-col", !footer && "gap-0")}
-      >
+      <DialogContent className={cn("flex max-h-[90vh] flex-col", !footer && "gap-0")}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

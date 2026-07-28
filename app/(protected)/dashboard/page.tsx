@@ -34,7 +34,7 @@ export default async function DashboardPage() {
   const { data: invoices } = await supabase
     .from("invoices")
     .select(
-      "id, number, status, amount_cents, currency, due_date, created_at, customer_id, reminders_enabled"
+      "id, number, status, amount_cents, currency, due_date, created_at, customer_id, reminders_enabled",
     )
     .order("created_at", { ascending: false });
   const { data: customers } = await supabase
@@ -75,11 +75,11 @@ export default async function DashboardPage() {
         invoice.due_date &&
         new Date(invoice.due_date) >= today &&
         new Date(invoice.due_date) <= thirtyDaysFromNow &&
-        invoice.status !== "paid"
+        invoice.status !== "paid",
     )
     .sort(
       (left, right) =>
-        new Date(left.due_date ?? 0).getTime() - new Date(right.due_date ?? 0).getTime()
+        new Date(left.due_date ?? 0).getTime() - new Date(right.due_date ?? 0).getTime(),
     )
     .slice(0, 5);
 
@@ -87,7 +87,9 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-background">
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-foreground">{t("dashboard.salesDashboard")}</h1>
+          <h1 className="text-3xl font-semibold text-foreground">
+            {t("dashboard.salesDashboard")}
+          </h1>
           <p className="text-sm text-muted-foreground">
             {t("dashboard.salesDashboardDescription")}
           </p>

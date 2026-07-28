@@ -10,26 +10,15 @@ type ClientCreateOverlayProps = {
   onSuccess?: () => void;
 };
 
-export function ClientCreateOverlay({
-  open,
-  onOpenChange,
-  onSuccess,
-}: ClientCreateOverlayProps) {
+export function ClientCreateOverlay({ open, onOpenChange, onSuccess }: ClientCreateOverlayProps) {
   const handleSuccess = () => {
     onOpenChange(false);
     onSuccess?.();
   };
 
   return (
-    <DetailOverlay
-      open={open}
-      onOpenChange={onOpenChange}
-      title={t("client.addClient")}
-    >
-      <ClientCreateForm
-        onSuccess={handleSuccess}
-        onCancel={() => onOpenChange(false)}
-      />
+    <DetailOverlay open={open} onOpenChange={onOpenChange} title={t("client.addClient")}>
+      <ClientCreateForm onSuccess={handleSuccess} onCancel={() => onOpenChange(false)} />
     </DetailOverlay>
   );
 }

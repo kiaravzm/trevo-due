@@ -35,7 +35,7 @@ async function getAuthUser() {
 async function hasReachedFreeLimitForTable(
   supabase: ReturnType<typeof createSupabaseServerClient>,
   userId: string,
-  table: "invoices" | "contracts"
+  table: "invoices" | "contracts",
 ) {
   const { data: subscription } = await supabase
     .from("subscriptions")
@@ -169,7 +169,9 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
   const number = String(formData.get("number") ?? "").trim();
   const status = String(formData.get("status") ?? "open").trim();
   const amount = String(formData.get("amount") ?? "").trim();
-  const currency = String(formData.get("currency") ?? "USD").trim().toUpperCase();
+  const currency = String(formData.get("currency") ?? "USD")
+    .trim()
+    .toUpperCase();
   const dueDate = String(formData.get("due_date") ?? "").trim();
   const customerId = String(formData.get("customer_id") ?? "").trim();
   const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
@@ -221,7 +223,9 @@ export async function updateInvoiceAction(_prev: ActionState, formData: FormData
   const number = String(formData.get("number") ?? "").trim();
   const status = String(formData.get("status") ?? "open").trim();
   const amount = String(formData.get("amount") ?? "").trim();
-  const currency = String(formData.get("currency") ?? "USD").trim().toUpperCase();
+  const currency = String(formData.get("currency") ?? "USD")
+    .trim()
+    .toUpperCase();
   const dueDate = String(formData.get("due_date") ?? "").trim();
   const customerId = String(formData.get("customer_id") ?? "").trim();
   const remindersEnabled = normalizeReminderEnabled(formData.get("reminders_enabled"));
@@ -276,10 +280,7 @@ export async function deleteInvoiceAction(formData: FormData) {
   revalidatePath("/dashboard/invoices");
 }
 
-export async function sendInvoiceReminderAction(
-  _prev: ActionState,
-  formData: FormData
-) {
+export async function sendInvoiceReminderAction(_prev: ActionState, formData: FormData) {
   const invoiceId = String(formData.get("invoice_id") ?? "").trim();
 
   if (!invoiceId) {
@@ -328,7 +329,7 @@ export async function sendInvoiceReminderAction(
       dueDate: invoice.due_date,
       senderName: "TrevoDue",
     },
-    (key, params) => t(key, params as Record<string, string | number>)
+    (key, params) => t(key, params as Record<string, string | number>),
   );
 
   const resend = getResend();
@@ -510,9 +511,7 @@ export async function getContractSignedUrlAction(filePath: string) {
     return { error: t("actions.signInToViewContracts") };
   }
 
-  const { data, error } = await supabase.storage
-    .from("contracts")
-    .createSignedUrl(path, 3600);
+  const { data, error } = await supabase.storage.from("contracts").createSignedUrl(path, 3600);
 
   if (error) {
     return { error: error.message };

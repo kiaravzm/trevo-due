@@ -27,9 +27,7 @@ export default async function SettingsPage() {
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-foreground">{t("settings.title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("settings.description")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("settings.description")}</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -37,9 +35,7 @@ export default async function SettingsPage() {
             <CardHeader>
               <CardTitle>{t("settings.billing")}</CardTitle>
               <CardDescription>
-                {isActive
-                  ? t("settings.subscriptionActive")
-                  : t("settings.managePlan")}
+                {isActive ? t("settings.subscriptionActive") : t("settings.managePlan")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

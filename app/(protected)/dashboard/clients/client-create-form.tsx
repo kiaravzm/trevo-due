@@ -43,29 +43,15 @@ export function ClientCreateForm({ onSuccess, onCancel }: ClientCreateFormProps)
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="client-name">{t("client.clientName")}</Label>
-          <Input
-            id="client-name"
-            name="name"
-            required
-            placeholder="Northwind Agency"
-          />
+          <Input id="client-name" name="name" required placeholder="Northwind Agency" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="client-email">{t("common.emailOptional")}</Label>
-          <Input
-            id="client-email"
-            name="email"
-            type="email"
-            placeholder="hello@northwind.com"
-          />
+          <Input id="client-email" name="email" type="email" placeholder="hello@northwind.com" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="client-company">{t("common.companyOptional")}</Label>
-          <Input
-            id="client-company"
-            name="company"
-            placeholder="Northwind LLC"
-          />
+          <Input id="client-company" name="company" placeholder="Northwind LLC" />
         </div>
       </div>
 

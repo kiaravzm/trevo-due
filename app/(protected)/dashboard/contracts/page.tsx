@@ -9,9 +9,7 @@ import { PaywallCard } from "../billing/paywall-card";
 export default async function ContractsPage() {
   const subscriptionStatus = await getSubscriptionStatus();
   const supabase = createSupabaseServerClient();
-  const { count } = await supabase
-    .from("contracts")
-    .select("id", { count: "exact", head: true });
+  const { count } = await supabase.from("contracts").select("id", { count: "exact", head: true });
   const { data: customers } = await supabase
     .from("customers")
     .select("id, name")
@@ -30,9 +28,7 @@ export default async function ContractsPage() {
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-foreground">{t("contract.title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("contract.uploadSignedDescription")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("contract.uploadSignedDescription")}</p>
         </div>
 
         {limitReached && (

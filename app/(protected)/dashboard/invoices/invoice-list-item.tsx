@@ -32,8 +32,7 @@ function formatAmount(amountCents: number) {
 
 export function InvoiceListItem({ invoice, customers }: InvoiceListItemProps) {
   const [overlayOpen, setOverlayOpen] = useState(false);
-  const customerName =
-    customers.find((c) => c.id === invoice.customer_id)?.name ?? "—";
+  const customerName = customers.find((c) => c.id === invoice.customer_id)?.name ?? "—";
 
   return (
     <>
@@ -50,9 +49,7 @@ export function InvoiceListItem({ invoice, customers }: InvoiceListItemProps) {
         className="flex min-h-[44px] cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <div className="grid min-w-0 flex-1 gap-1 md:grid-cols-[1fr,1fr,1fr,1fr,1fr]">
-          <span className="truncate font-medium text-foreground">
-            {invoice.number}
-          </span>
+          <span className="truncate font-medium text-foreground">{invoice.number}</span>
           <span className="truncate">
             <StatusBadge
               status={invoice.status as "paid" | "open" | "overdue"}
@@ -62,12 +59,8 @@ export function InvoiceListItem({ invoice, customers }: InvoiceListItemProps) {
           <span className="truncate text-sm text-muted-foreground">
             {invoice.currency} {formatAmount(invoice.amount_cents)}
           </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {invoice.due_date ?? "—"}
-          </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {customerName}
-          </span>
+          <span className="truncate text-sm text-muted-foreground">{invoice.due_date ?? "—"}</span>
+          <span className="truncate text-sm text-muted-foreground">{customerName}</span>
         </div>
         <Button
           variant="ghost"

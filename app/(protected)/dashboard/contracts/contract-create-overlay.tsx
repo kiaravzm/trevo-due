@@ -25,11 +25,7 @@ export function ContractCreateOverlay({
   };
 
   return (
-    <DetailOverlay
-      open={open}
-      onOpenChange={onOpenChange}
-      title={t("contract.uploadContract")}
-    >
+    <DetailOverlay open={open} onOpenChange={onOpenChange} title={t("contract.uploadContract")}>
       <ContractCreateForm
         customers={customers}
         onSuccess={handleSuccess}

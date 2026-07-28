@@ -27,7 +27,7 @@ export function LoginForm() {
     try {
       const supabase = createSupabaseBrowserClient();
       const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-        nextPath
+        nextPath,
       )}`;
 
       const { error: signInError } = await supabase.auth.signInWithOtp({
@@ -65,9 +65,7 @@ export function LoginForm() {
             />
           </div>
           <CardTitle>{t("login.title")}</CardTitle>
-          <CardDescription>
-            {t("login.description")}
-          </CardDescription>
+          <CardDescription>{t("login.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-5" onSubmit={handleLogin}>

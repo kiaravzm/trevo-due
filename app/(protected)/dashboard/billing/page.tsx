@@ -44,7 +44,9 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
     .maybeSingle();
 
   const trialInfo = subscription?.trial_ends_at
-    ? t("billing.trialEndsOn", { date: new Date(subscription.trial_ends_at).toLocaleDateString("en-US") })
+    ? t("billing.trialEndsOn", {
+        date: new Date(subscription.trial_ends_at).toLocaleDateString("en-US"),
+      })
     : t("billing.startTrial");
 
   return (
@@ -52,9 +54,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-foreground">{t("billing.title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("billing.description")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("billing.description")}</p>
         </div>
 
         <StatusMessage status={searchParams?.status} />
@@ -62,9 +62,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
         <Card className="shadow-soft">
           <CardHeader>
             <CardTitle>{t("billing.agencyDocsMonthly")}</CardTitle>
-            <CardDescription>
-              {trialInfo}
-            </CardDescription>
+            <CardDescription>{trialInfo}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="space-y-2 text-sm text-muted-foreground">

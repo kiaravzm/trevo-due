@@ -28,11 +28,7 @@ type ContractsCardProps = {
   limitReached: boolean;
 };
 
-export function ContractsCard({
-  contracts,
-  customers,
-  limitReached,
-}: ContractsCardProps) {
+export function ContractsCard({ contracts, customers, limitReached }: ContractsCardProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const router = useRouter();
 
@@ -49,10 +45,7 @@ export function ContractsCard({
             <CardTitle>{t("contract.savedContracts")}</CardTitle>
             <CardDescription>{t("contract.savedDescription")}</CardDescription>
           </div>
-          <Button
-            onClick={() => setCreateOpen(true)}
-            disabled={limitReached}
-          >
+          <Button onClick={() => setCreateOpen(true)} disabled={limitReached}>
             {t("contract.uploadContract")}
           </Button>
         </CardHeader>
@@ -66,11 +59,7 @@ export function ContractsCard({
                 <span className="w-10" aria-hidden />
               </div>
               {contracts.map((contract) => (
-                <ContractListItem
-                  key={contract.id}
-                  contract={contract}
-                  customers={customers}
-                />
+                <ContractListItem key={contract.id} contract={contract} customers={customers} />
               ))}
             </>
           ) : (

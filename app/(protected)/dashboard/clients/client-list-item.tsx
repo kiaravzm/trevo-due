@@ -37,12 +37,8 @@ export function ClientListItem({ client }: ClientListItemProps) {
       >
         <div className="grid min-w-0 flex-1 gap-1 md:grid-cols-[1fr,1fr,1fr]">
           <span className="truncate font-medium text-foreground">{client.name}</span>
-          <span className="truncate text-sm text-muted-foreground">
-            {client.company || "—"}
-          </span>
-          <span className="truncate text-sm text-muted-foreground">
-            {client.email || "—"}
-          </span>
+          <span className="truncate text-sm text-muted-foreground">{client.company || "—"}</span>
+          <span className="truncate text-sm text-muted-foreground">{client.email || "—"}</span>
         </div>
         <Button
           variant="ghost"
@@ -57,11 +53,7 @@ export function ClientListItem({ client }: ClientListItemProps) {
           <Pencil className="h-4 w-4" />
         </Button>
       </div>
-      <ClientDetailOverlay
-        client={client}
-        open={overlayOpen}
-        onOpenChange={setOverlayOpen}
-      />
+      <ClientDetailOverlay client={client} open={overlayOpen} onOpenChange={setOverlayOpen} />
     </>
   );
 }

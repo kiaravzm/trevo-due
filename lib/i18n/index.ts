@@ -16,10 +16,7 @@ function getNested(obj: object, path: string): string | object | undefined {
  * Get a localized string by key. Supports nested keys (e.g. "invoice.status.paid")
  * and interpolation: t("client.deleteDescription", { name: "Acme" }) replaces {name} in the string.
  */
-export function t(
-  key: string,
-  params?: Record<string, string | number>
-): string {
+export function t(key: string, params?: Record<string, string | number>): string {
   const value = getNested(messages, key);
   if (typeof value !== "string") {
     return key;
@@ -45,9 +42,7 @@ export function invoiceStatusLabel(status: string): string {
  */
 export function contractStatusLabel(status: string): string {
   const key =
-    status in messages.contract.status
-      ? `contract.status.${status}`
-      : "contract.status.signed";
+    status in messages.contract.status ? `contract.status.${status}` : "contract.status.signed";
   return t(key);
 }
 
