@@ -13,11 +13,7 @@ export default function DemoInvoicesPage() {
           <p className="text-sm text-muted-foreground">{t("invoice.pageDescription")}</p>
         </div>
 
-        <InvoicesCard
-          invoices={invoices}
-          customers={[...demoCustomerOptions]}
-          limitReached
-        />
+        <InvoicesCard invoices={invoices} customers={[...demoCustomerOptions]} limitReached />
       </section>
     </main>
   );

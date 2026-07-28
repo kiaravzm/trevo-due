@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  FileText,
-  FileSignature,
-  type LucideIcon,
-} from "lucide-react";
+import { LayoutDashboard, Users, FileText, FileSignature, type LucideIcon } from "lucide-react";
 
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";

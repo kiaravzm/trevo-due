@@ -3,10 +3,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { t } from "@/lib/i18n";
-import {
-  demoCustomerOptions,
-  demoInvoices,
-} from "@/lib/demo/fixtures";
+import { demoCustomerOptions, demoInvoices } from "@/lib/demo/fixtures";
 import { MetricCard } from "@/app/(protected)/dashboard/metric-card";
 import { NextDueDatesCard } from "@/app/(protected)/dashboard/next-due-dates-card";
 

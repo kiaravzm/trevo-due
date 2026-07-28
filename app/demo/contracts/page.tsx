@@ -10,16 +10,10 @@ export default function DemoContractsPage() {
       <section className="container space-y-8 py-12">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-foreground">{t("contract.title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("contract.uploadSignedDescription")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("contract.uploadSignedDescription")}</p>
         </div>
 
-        <ContractsCard
-          contracts={contracts}
-          customers={[...demoCustomerOptions]}
-          limitReached
-        />
+        <ContractsCard contracts={contracts} customers={[...demoCustomerOptions]} limitReached />
       </section>
     </main>
   );
