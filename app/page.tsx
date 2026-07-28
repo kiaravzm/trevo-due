@@ -34,10 +34,15 @@ export default function Home() {
           <p className="max-w-xl text-sm text-muted-foreground">
             Designed for independent professionals and small service businesses.
           </p>
-          <div className="flex flex-col items-center gap-2 pt-2">
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/login">Start free trial</Link>
-            </Button>
+          <div className="flex flex-col items-center gap-3 pt-2">
+            <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
+              <Button asChild size="lg" className="w-full sm:w-auto">
+                <Link href="/login">Start free trial</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                <Link href="/demo">View demo</Link>
+              </Button>
+            </div>
             <span className="text-sm text-muted-foreground">No credit card required</span>
           </div>
         </section>

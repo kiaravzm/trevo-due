@@ -5,6 +5,9 @@
 A lightweight SaaS for small service-based agencies to manage **clients, contracts, and
 invoices** — with subscription billing and payment-reminder emails built in.
 
+**Live demo:** visit `/demo` on the deployed app — read-only sample data, no account
+required.
+
 TrevoDue focuses on speed and clarity over the complexity of a full accounting or ERP
 system. It is a personal project built to explore a realistic, production-shaped
 Next.js stack end to end (auth, database with row-level security, payments, and

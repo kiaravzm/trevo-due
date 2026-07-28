@@ -7,10 +7,17 @@ import { Button } from "@/components/ui/button";
 import { LogoutButton } from "@/components/logout-button";
 
 export async function SiteHeader() {
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+
+  try {
+    const supabase = createSupabaseServerClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+  } catch {
+    // Auth is optional on the marketing site (e.g. paused Supabase during local/demo use).
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
