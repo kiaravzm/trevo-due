@@ -1,6 +1,7 @@
 import { t } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscriptionStatus } from "@/lib/billing/subscription";
+import { hasReachedFreeLimit } from "@/lib/billing/limits";
 
 import { ContractsCard } from "./contracts-card";
 import { PaywallCard } from "../billing/paywall-card";
@@ -22,7 +23,7 @@ export default async function ContractsPage() {
     .order("created_at", { ascending: false });
 
   const contractCount = count ?? 0;
-  const limitReached = subscriptionStatus === "inactive" && contractCount >= 3;
+  const limitReached = hasReachedFreeLimit(subscriptionStatus, contractCount);
 
   return (
     <main className="min-h-screen bg-background">

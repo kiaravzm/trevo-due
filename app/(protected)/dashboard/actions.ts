@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
 
+import { hasReachedFreeLimit } from "@/lib/billing/limits";
+import type { SubscriptionStatus } from "@/lib/billing/subscription";
 import { buildInvoiceReminderEmail } from "@/lib/email/invoice-reminder";
 import { t } from "@/lib/i18n";
+import { parseCurrencyToCents } from "@/lib/money";
 import { getStripeServerClient } from "@/lib/stripe/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -20,17 +23,6 @@ function createState(status: ActionState["status"], message: string | null): Act
   return { status, message };
 }
 
-function parseCurrencyToCents(value: string) {
-  const normalized = value.replace(",", ".").trim();
-  if (!/^\d+(\.\d{1,2})?$/.test(normalized)) {
-    return null;
-  }
-
-  const [whole, decimals = ""] = normalized.split(".");
-  const cents = Number(whole) * 100 + Number(decimals.padEnd(2, "0"));
-  return Number.isNaN(cents) ? null : cents;
-}
-
 async function getAuthUser() {
   const supabase = createSupabaseServerClient();
   const {
@@ -40,9 +32,10 @@ async function getAuthUser() {
   return { supabase, user };
 }
 
-async function hasReachedFreeInvoiceLimit(
+async function hasReachedFreeLimitForTable(
   supabase: ReturnType<typeof createSupabaseServerClient>,
-  userId: string
+  userId: string,
+  table: "invoices" | "contracts"
 ) {
   const { data: subscription } = await supabase
     .from("subscriptions")
@@ -50,38 +43,17 @@ async function hasReachedFreeInvoiceLimit(
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (subscription?.status === "active" || subscription?.status === "trialing") {
-    return false;
-  }
+  const status: SubscriptionStatus =
+    subscription?.status === "active" || subscription?.status === "trialing"
+      ? subscription.status
+      : "inactive";
 
   const { count } = await supabase
-    .from("invoices")
+    .from(table)
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId);
 
-  return (count ?? 0) >= 3;
-}
-
-async function hasReachedFreeContractLimit(
-  supabase: ReturnType<typeof createSupabaseServerClient>,
-  userId: string
-) {
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("status")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (subscription?.status === "active" || subscription?.status === "trialing") {
-    return false;
-  }
-
-  const { count } = await supabase
-    .from("contracts")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId);
-
-  return (count ?? 0) >= 3;
+  return hasReachedFreeLimit(status, count ?? 0);
 }
 
 function getResend() {
@@ -220,7 +192,7 @@ export async function createInvoiceAction(_prev: ActionState, formData: FormData
     return createState("error", t("actions.signInToCreateInvoices"));
   }
 
-  const limitReached = await hasReachedFreeInvoiceLimit(supabase, user.id);
+  const limitReached = await hasReachedFreeLimitForTable(supabase, user.id, "invoices");
   if (limitReached) {
     return createState("error", t("actions.freePlanInvoices"));
   }
@@ -449,7 +421,7 @@ export async function createContractAction(_prev: ActionState, formData: FormDat
     return createState("error", t("actions.signInToUploadContracts"));
   }
 
-  const limitReached = await hasReachedFreeContractLimit(supabase, user.id);
+  const limitReached = await hasReachedFreeLimitForTable(supabase, user.id, "contracts");
   if (limitReached) {
     return createState("error", t("actions.freePlanContracts"));
   }
