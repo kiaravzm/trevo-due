@@ -37,15 +37,15 @@ transactional email).
 
 ## Tech stack
 
-| Area          | Choice                                             |
-| ------------- | -------------------------------------------------- |
-| Framework     | Next.js 14 (App Router, React Server Components)   |
-| Language      | TypeScript (strict mode)                           |
-| Auth & data   | Supabase (Postgres, Auth, Storage, RLS)            |
-| Payments      | Stripe (Checkout + webhooks)                       |
-| Email         | Resend                                             |
-| UI            | Tailwind CSS + shadcn/ui + Radix primitives        |
-| Notifications | Sonner (toasts)                                    |
+| Area          | Choice                                           |
+| ------------- | ------------------------------------------------ |
+| Framework     | Next.js 14 (App Router, React Server Components) |
+| Language      | TypeScript (strict mode)                         |
+| Auth & data   | Supabase (Postgres, Auth, Storage, RLS)          |
+| Payments      | Stripe (Checkout + webhooks)                     |
+| Email         | Resend                                           |
+| UI            | Tailwind CSS + shadcn/ui + Radix primitives      |
+| Notifications | Sonner (toasts)                                  |
 
 Business logic runs in Next.js **server actions**, and access to every table is
 protected by Postgres **row-level security** so users only ever see their own data.
@@ -129,9 +129,13 @@ supabase/                  SQL schema, RLS policies, storage setup
 
 ## Available scripts
 
-| Command         | Description                     |
-| --------------- | ------------------------------- |
-| `npm run dev`   | Start the development server    |
-| `npm run build` | Production build                |
-| `npm run start` | Serve the production build      |
-| `npm run lint`  | Run ESLint                      |
+| Command                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `npm run dev`          | Start the development server                     |
+| `npm run build`        | Production build                                 |
+| `npm run start`        | Serve the production build                       |
+| `npm run lint`         | Run ESLint                                       |
+| `npm run typecheck`    | Type-check with TypeScript (`tsc --noEmit`)      |
+| `npm run format`       | Format the codebase with Prettier                |
+| `npm run format:check` | Check formatting without writing (useful in CI)  |
+| `npm run db:types`     | Regenerate `lib/supabase/types.ts` from Supabase |
