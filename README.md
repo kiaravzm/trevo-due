@@ -1,4 +1,5 @@
 [![CI](https://github.com/kiaravzm/trevo-due/actions/workflows/ci.yml/badge.svg)](https://github.com/kiaravzm/trevo-due/actions/workflows/ci.yml)
+
 # TrevoDue
 
 A lightweight SaaS for small service-based agencies to manage **clients, contracts, and
@@ -140,3 +141,7 @@ supabase/                  SQL schema, RLS policies, storage setup
 | `npm run format`       | Format the codebase with Prettier                |
 | `npm run format:check` | Check formatting without writing (useful in CI)  |
 | `npm run db:types`     | Regenerate `lib/supabase/types.ts` from Supabase |
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

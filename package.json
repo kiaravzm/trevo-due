@@ -16,7 +16,7 @@
     "test:watch": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "author": "kiaravzm",
   "license": "ISC",
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
