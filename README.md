@@ -1,3 +1,4 @@
+[![CI](https://github.com/kiaravzm/trevo-due/actions/workflows/ci.yml/badge.svg)](https://github.com/kiaravzm/trevo-due/actions/workflows/ci.yml)
 # TrevoDue
 
 A lightweight SaaS for small service-based agencies to manage **clients, contracts, and
